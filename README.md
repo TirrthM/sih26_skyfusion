@@ -30,8 +30,8 @@ Follow these simple steps to run the application locally on your machine:
 
 ### 2. Clone the Repository
 ```bash
-git clone https://github.com/TirthM/SkyFusion.git
-cd SkyFusion
+git clone https://github.com/TirrthM/sih26_skyfusion.git
+cd sih26_skyfusion
 ```
 
 ### 3. Install Dependencies
