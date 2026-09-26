@@ -8,7 +8,6 @@ import { CapabilitiesGrid } from '@/components/landing/CapabilitiesGrid';
 import { PipelineDemo } from '@/components/landing/PipelineDemo';
 import { WorkflowSteps } from '@/components/landing/WorkflowSteps';
 import { FAQSection } from '@/components/landing/FAQSection';
-import { DesignSystemPreview } from '@/components/landing/DesignSystemPreview';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 import {
   ReconstructionSettings,
@@ -76,9 +75,6 @@ export default function SingleHomePage() {
 
         {/* 6. Frequently Asked Questions */}
         <FAQSection />
-
-        {/* 7. Design System Overview & Anchor */}
-        <DesignSystemPreview />
       </main>
 
       {/* Tactical Footer */}

@@ -11,7 +11,7 @@ export const LandingNav: React.FC = () => {
 
   // Track active section on scroll for subtle indicator
   useEffect(() => {
-    const sections = ['reconstruction', 'capabilities', 'pipeline', 'workflow', 'faq', 'design-system'];
+    const sections = ['reconstruction', 'capabilities', 'pipeline', 'workflow', 'faq'];
 
     const handleScroll = () => {
       const scrollPosition = window.scrollY + 180;
@@ -48,7 +48,6 @@ export const LandingNav: React.FC = () => {
     { label: '3D Pipeline', id: 'pipeline' },
     { label: 'Workflow', id: 'workflow' },
     { label: 'FAQ', id: 'faq' },
-    { label: 'Design System', id: 'design-system' },
   ];
 
   return (
