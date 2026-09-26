@@ -36,7 +36,7 @@ export const WorkflowSteps: React.FC = () => {
       step: '04',
       title: 'Interactive Twin & Export',
       description:
-        'Inspect, measure volumes, and export production-ready GLB, LAS, and Cesium 3D tiles for CAD, GIS, VFX, or emergency operations.',
+        'Inspect, measure volumes, and export production-ready GLB, LAS, and Cesium 3D tiles for CAD, GIS, VFX, or field operations.',
       icon: Share2,
       tag: 'DIGITAL TWIN',
     },
@@ -54,10 +54,10 @@ export const WorkflowSteps: React.FC = () => {
         <Badge variant="emerald" hasDot>
           Flight to Digital Twin
         </Badge>
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-950 dark:text-white">
           4 Steps. Zero Setup Hassle.
         </h2>
-        <p className="text-slate-300 text-sm sm:text-base font-sans">
+        <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base font-sans">
           From takeoff to a high-fidelity interactive 3D model in under 2 minutes.
         </p>
       </motion.div>
@@ -76,28 +76,28 @@ export const WorkflowSteps: React.FC = () => {
             >
               <Card
                 variant="tactical"
-                className="flex flex-col justify-between relative group hover:-translate-y-1.5 hover:border-emerald-400/50 transition-all w-full"
+                className="flex flex-col justify-between relative group hover:-translate-y-1.5 hover:border-emerald-500/50 transition-all w-full"
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <span className="w-10 h-10 rounded-2xl bg-white/10 text-emerald-300 border border-white/20 flex items-center justify-center font-mono font-bold text-sm shadow-[0_0_15px_rgba(16,185,129,0.2)] group-hover:scale-105 group-hover:border-emerald-400/50 transition-all">
+                    <span className="w-10 h-10 rounded-2xl bg-emerald-50 dark:bg-white/10 text-emerald-600 dark:text-emerald-300 border border-emerald-200 dark:border-white/20 flex items-center justify-center font-mono font-bold text-sm shadow-sm group-hover:scale-105 group-hover:border-emerald-500/50 transition-all">
                       {item.step}
                     </span>
                     <Badge variant="slate">{item.tag}</Badge>
                   </div>
 
-                  <h3 className="font-display text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
+                  <h3 className="font-display text-lg font-bold text-slate-950 dark:text-white mb-2 group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors">
                     {item.title}
                   </h3>
 
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                     {item.description}
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
+                <div className="mt-6 pt-4 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs font-mono text-slate-500 dark:text-slate-400">
                   <span>STAGE {item.step} / 04</span>
-                  <Icon className="w-4 h-4 text-emerald-400" />
+                  <Icon className="w-4 h-4 text-emerald-500" />
                 </div>
               </Card>
             </motion.div>

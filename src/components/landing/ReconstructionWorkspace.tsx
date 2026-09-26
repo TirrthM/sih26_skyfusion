@@ -22,6 +22,10 @@ import {
   Filter,
   Maximize2,
   Minimize2,
+  ArrowUpRight,
+  ChevronRight,
+  Radio,
+  Plane,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
@@ -72,6 +76,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isMaximized]);
+
   const [videoMetadata, setVideoMetadata] = useState<VideoInputMetadata | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -216,7 +221,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
     });
   };
 
-  // Dynamic point count mapped from settings.maxPoints (500 - 10000 K -> 1500 - 7500 3D particles)
+  // Dynamic point count mapped from settings.maxPoints
   const calculatedPointCount = Math.min(
     7500,
     Math.max(1500, Math.round(settings.maxPoints * 0.75 + (settings.confidenceThreshold / 100) * 1500))
@@ -225,108 +230,129 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
   return (
     <section
       id="reconstruction"
-      className="scroll-mt-20 pt-4 sm:pt-6 md:pt-8 pb-12 px-3 sm:px-6 md:px-8 max-w-7xl mx-auto space-y-6"
+      className="scroll-mt-20 pt-2 sm:pt-4 pb-12 px-3 sm:px-6 md:px-8 max-w-7xl mx-auto space-y-10"
     >
-      {/* Outer Cinematic Showcase Glass Bezel Frame matching Reference Image */}
-      <div className="rounded-[28px] sm:rounded-[36px] md:rounded-[44px] border border-white/20 bg-slate-950/60 dark:bg-slate-950/70 backdrop-blur-3xl shadow-[0_30px_100px_rgba(0,0,0,0.8)] p-6 sm:p-8 md:p-10 relative overflow-hidden space-y-8">
-        {/* Top Hero Row */}
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
-          <div className="max-w-2xl space-y-3">
-            <h1 className="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.08]">
-              The Future of Smart <br className="hidden sm:inline" /> Aerial Technology
-            </h1>
-            <p className="text-slate-300 font-sans text-sm sm:text-base max-w-xl leading-relaxed">
-              Shoot 4K videos, track subjects automatically, and enjoy smooth, stable flight with real-time 3D spatial reconstruction.
-            </p>
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* FARMDONE HERO SHOWCASE BANNER FRAME (Matches Dribbble Shot) */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <div className="rounded-[32px] sm:rounded-[42px] md:rounded-[50px] border border-white/40 dark:border-white/10 shadow-[0_25px_70px_rgba(0,0,0,0.18)] overflow-hidden relative min-h-[560px] sm:min-h-[640px] md:min-h-[700px] flex flex-col justify-between p-6 sm:p-10 md:p-14 bg-slate-950">
+        {/* Cinematic Agricultural Drone Field Hero Background */}
+        <div className="absolute inset-0 z-0">
+          <img
+            src="/images/farmdrone_hero.jpg"
+            alt="Farmdrone AI Aerial Scan"
+            className="w-full h-full object-cover object-center scale-[1.01]"
+          />
+          {/* Subtle gradient vignette to guarantee readable typography */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/70" />
+        </div>
 
-            {/* Dual CTA Buttons & Social Proof Row */}
-            <div className="pt-2 flex flex-wrap items-center gap-4">
-              <a
-                href="#upload-panel"
-                onClick={(e) => {
-                  e.preventDefault();
-                  fileInputRef.current?.click();
-                }}
-                className="px-7 py-3 rounded-full bg-white text-slate-950 font-sans font-bold text-sm shadow-xl hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all inline-flex items-center gap-2 cursor-pointer"
-              >
-                Upload Video
-              </a>
+        {/* Top spacer */}
+        <div className="relative z-10" />
 
-              <a
-                href="#examples"
-                onClick={(e) => {
-                  e.preventDefault();
-                  document.getElementById('examples')?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="px-6 py-3 rounded-full border border-white/30 bg-white/10 backdrop-blur-md text-white font-sans font-semibold text-sm hover:bg-white/20 active:scale-95 transition-all inline-flex items-center gap-2 cursor-pointer"
-              >
-                Watch Demo <span className="w-5 h-5 rounded-full border border-white/40 flex items-center justify-center text-[10px]">▶</span>
-              </a>
+        {/* Center Hero Content (Headline + Dual Center Pill CTA Buttons) */}
+        <div className="relative z-10 max-w-4xl mx-auto text-center space-y-6 sm:space-y-8 my-auto pt-6 pb-8">
+          <h1 className="font-sans text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white leading-[1.12] drop-shadow-[0_4px_24px_rgba(0,0,0,0.6)]">
+            Smart farming solutions <br className="hidden sm:inline" />
+            boosting agricultural productivity <br className="hidden sm:inline" />
+            with AI technology
+          </h1>
 
-              {/* Reviews and Ratings */}
-              <div className="flex items-center gap-2.5 ml-0 sm:ml-4 text-xs font-sans text-slate-300">
-                <div className="flex -space-x-2">
-                  <span className="w-7 h-7 rounded-full bg-gradient-to-tr from-sky-400 to-indigo-500 border border-white flex items-center justify-center text-[9px] font-bold text-white shadow-sm">
-                    UAV
-                  </span>
-                  <span className="w-7 h-7 rounded-full bg-gradient-to-tr from-emerald-400 to-teal-500 border border-white flex items-center justify-center text-[9px] font-bold text-white shadow-sm">
-                    4K
-                  </span>
-                  <span className="w-7 h-7 rounded-full bg-gradient-to-tr from-amber-400 to-orange-500 border border-white flex items-center justify-center text-[9px] font-bold text-white shadow-sm">
-                    +12
-                  </span>
-                </div>
-                <div className="flex items-center gap-1">
-                  <span className="text-amber-400 font-bold">★</span>
-                  <span className="font-bold text-white">4.9 K</span>
-                  <span className="text-slate-400">Reviews</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          {/* Dual Centered Action Pill Buttons matching Dribbble reference */}
+          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 pt-2">
+            <button
+              onClick={() => {
+                const el = document.getElementById('upload-panel');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="px-7 py-3.5 rounded-full bg-slate-950 hover:bg-slate-900 text-white font-sans text-xs sm:text-sm font-bold uppercase tracking-wider flex items-center gap-2 shadow-[0_10px_25px_rgba(0,0,0,0.4)] hover:scale-105 active:scale-95 transition-all"
+            >
+              <span>BOOST FARM&apos;S POTENTIAL</span>
+              <ArrowUpRight className="w-4 h-4" />
+            </button>
 
-          {/* Right Arrow Controls */}
-          <div className="hidden lg:flex items-center gap-3">
             <button
               onClick={() => {
                 const el = document.getElementById('examples');
                 el?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="w-10 h-10 rounded-full border border-white/30 bg-white/10 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/20 transition-all"
-              aria-label="Previous Showcase"
+              className="px-7 py-3.5 rounded-full bg-white/25 hover:bg-white/35 backdrop-blur-md border border-white/40 text-white font-sans text-xs sm:text-sm font-bold uppercase tracking-wider hover:scale-105 active:scale-95 transition-all"
             >
-              ←
-            </button>
-            <button
-              onClick={() => {
-                const el = document.getElementById('capabilities');
-                el?.scrollIntoView({ behavior: 'smooth' });
-              }}
-              className="w-10 h-10 rounded-full bg-white text-slate-950 flex items-center justify-center hover:bg-slate-100 shadow-md transition-all font-bold"
-              aria-label="Next Section"
-            >
-              →
+              <span>LEARN MORE</span>
             </button>
           </div>
         </div>
 
-      {/* Main Reconstruction Workspace (2 Columns) */}
-      {/* Main Reconstruction Workspace (2 Columns) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-stretch">
+        {/* Bottom Row: Left Info Subtitle & Right Floating Aerial Widget */}
+        <div className="relative z-10 flex flex-col md:flex-row items-end md:items-end justify-between gap-6 pt-6">
+          {/* Left Text */}
+          <div className="max-w-md text-white drop-shadow-md space-y-2">
+            <p className="text-xs sm:text-sm font-sans font-medium text-slate-100/90 leading-relaxed">
+              Discover how Smart Farming Solutions can elevate your agricultural productivity through cutting-edge AI technology &amp; 3D spatial reconstruction.
+            </p>
+          </div>
+
+          {/* Right Floating Dark Glass Widget */}
+          <div className="w-full sm:w-auto max-w-xs p-3.5 rounded-2xl bg-black/65 backdrop-blur-xl border border-white/25 text-white shadow-2xl space-y-2.5 shrink-0">
+            {/* Aerial Video / View Thumbnail with Play Button */}
+            <div className="relative rounded-xl overflow-hidden aspect-video bg-slate-900 border border-white/10 group cursor-pointer"
+              onClick={() => {
+                const el = document.getElementById('examples');
+                el?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
+              <img
+                src="/images/farmdrone_widget.jpg"
+                alt="Agricultural Aerial Scanner"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full bg-white/30 backdrop-blur-md border border-white/50 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <Play className="w-3.5 h-3.5 fill-white text-white ml-0.5" />
+                </div>
+              </div>
+            </div>
+
+            {/* Widget Details */}
+            <div className="space-y-1">
+              <h4 className="text-xs font-bold font-sans text-white leading-tight">
+                Smart Farming Solutions Boosting Agricultural
+              </h4>
+              <p className="text-[10px] text-slate-300 font-sans leading-tight">
+                Transform Your Harvest: Unleash the Power of AI for Maximum Yield!
+              </p>
+            </div>
+
+            {/* Carousel Pagination Indicator */}
+            <div className="flex items-center gap-1 pt-0.5">
+              <span className="w-5 h-1 rounded-full bg-white" />
+              <span className="w-1.5 h-1 rounded-full bg-white/30" />
+              <span className="w-1.5 h-1 rounded-full bg-white/30" />
+              <span className="w-1.5 h-1 rounded-full bg-white/30" />
+              <span className="w-1.5 h-1 rounded-full bg-white/30" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ───────────────────────────────────────────────────────────── */}
+      {/* 2-COLUMN INTERACTIVE RECONSTRUCTION WORKSPACE */}
+      {/* ───────────────────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch pt-4">
         {/* Left Column: Input & Settings Panel (42% width) */}
-        <div id="upload-panel" className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-7 rounded-3xl bg-slate-950/80 backdrop-blur-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] space-y-6">
+        <div id="upload-panel" className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-7 rounded-3xl bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-black/10 dark:border-white/15 shadow-[0_15px_35px_rgba(0,0,0,0.08)] space-y-6">
           <div className="space-y-6">
             {/* Header */}
-            <div className="flex items-center justify-between border-b pb-4 border-white/10">
+            <div className="flex items-center justify-between border-b pb-4 border-slate-200 dark:border-white/10">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl bg-emerald-500/15 border border-emerald-400/40 text-emerald-400 flex items-center justify-center shadow-[0_0_12px_rgba(16,185,129,0.2)]">
-                  <Film className="w-4 h-4 text-emerald-400" />
+                <div className="w-10 h-10 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shadow-sm">
+                  <Film className="w-5 h-5 text-emerald-500" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-base text-white">
+                  <h3 className="font-display font-bold text-base text-slate-950 dark:text-white">
                     Upload Flight Video
                   </h3>
-                  <p className="text-[11px] text-slate-400 font-sans">
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-sans">
                     Upload a single-pass drone video to generate a 3D reconstruction.
                   </p>
                 </div>
@@ -354,7 +380,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
             {/* Error Alert */}
             {errorMessage && (
-              <div className="p-3 rounded-2xl bg-rose-950/50 border border-rose-500/50 text-rose-300 text-xs font-mono flex items-center gap-2">
+              <div className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-300 dark:border-rose-500/50 text-rose-700 dark:text-rose-300 text-xs font-mono flex items-center gap-2">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{errorMessage}</span>
               </div>
@@ -362,8 +388,8 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
             {/* Visual Update Toast Banner */}
             {visualUpdateNotice && (
-              <div className="p-2.5 rounded-2xl bg-emerald-950/50 border border-emerald-500/50 text-emerald-300 text-xs font-mono flex items-center gap-2 animate-in fade-in duration-150">
-                <Sparkles className="w-4 h-4 shrink-0 text-emerald-400" />
+              <div className="p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-300 dark:border-emerald-500/50 text-emerald-800 dark:text-emerald-300 text-xs font-mono flex items-center gap-2 animate-in fade-in duration-150">
+                <Sparkles className="w-4 h-4 shrink-0 text-emerald-500" />
                 <span>{visualUpdateNotice}</span>
               </div>
             )}
@@ -375,26 +401,26 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                 onDragLeave={onDragLeave}
                 onDrop={onDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border border-dashed rounded-2xl p-6 text-center space-y-3 transition-all cursor-pointer select-none ${
+                className={`border-2 border-dashed rounded-2xl p-6 text-center space-y-3 transition-all cursor-pointer select-none ${
                   isDragging
-                    ? 'border-emerald-400 bg-emerald-950/30 scale-[1.01] shadow-[0_0_25px_rgba(16,185,129,0.3)]'
-                    : 'border-white/20 bg-white/5 hover:border-emerald-400/60 hover:bg-white/10'
+                    ? 'border-emerald-500 bg-emerald-50/50 dark:bg-emerald-950/30 scale-[1.01] shadow-[0_0_25px_rgba(16,185,129,0.2)]'
+                    : 'border-slate-300 dark:border-white/20 bg-slate-50/50 dark:bg-white/5 hover:border-emerald-500/60 hover:bg-slate-100/50 dark:hover:bg-white/10'
                 }`}
               >
-                <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 mx-auto flex items-center justify-center text-white shadow-inner">
-                  <UploadCloud className="w-6 h-6 text-emerald-400" />
+                <div className="w-12 h-12 rounded-2xl bg-white dark:bg-white/10 border border-slate-200 dark:border-white/20 mx-auto flex items-center justify-center text-slate-950 dark:text-white shadow-sm">
+                  <UploadCloud className="w-6 h-6 text-emerald-500" />
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-sm font-display font-bold text-white">
+                  <p className="text-sm font-display font-bold text-slate-950 dark:text-white">
                     Upload Video
                   </p>
-                  <p className="text-xs text-slate-300 font-sans">
-                    Drag & drop your flight video here, or click to browse
+                  <p className="text-xs text-slate-500 dark:text-slate-300 font-sans">
+                    Drag &amp; drop your flight video here, or click to browse
                   </p>
                 </div>
                 <div>
-                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-mono font-bold bg-white text-slate-950 shadow-md hover:bg-slate-100 transition-colors">
-                    <FileVideo className="w-3.5 h-3.5 text-slate-950" />
+                  <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full text-xs font-mono font-bold bg-slate-950 text-white shadow-md hover:bg-slate-800 transition-colors">
+                    <FileVideo className="w-3.5 h-3.5 text-white" />
                     Browse Files
                   </span>
                 </div>
@@ -407,8 +433,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
             {/* Uploaded Video Metadata & Preview */}
             {videoMetadata && (
               <div className="space-y-3.5 animate-in fade-in duration-200">
-                {/* Compact HTML5 Video Preview Player (or fallback for demo dataset) */}
-                <div className="rounded-2xl overflow-hidden border border-white/15 bg-black shadow-lg relative">
+                <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-white/15 bg-black shadow-lg relative">
                   {videoMetadata.previewUrl ? (
                     <video
                       src={videoMetadata.previewUrl}
@@ -429,27 +454,27 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                 </div>
 
                 {/* Video Metadata Card */}
-                <div className="p-3.5 rounded-2xl bg-white/5 border border-white/10 grid grid-cols-2 gap-2 text-xs font-mono">
+                <div className="p-3.5 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 grid grid-cols-2 gap-2 text-xs font-mono">
                   <div>
-                    <span className="text-slate-400">FILE: </span>
-                    <span className="text-white font-bold truncate inline-block max-w-[120px]" title={videoMetadata.fileName}>
+                    <span className="text-slate-500 dark:text-slate-400">FILE: </span>
+                    <span className="text-slate-950 dark:text-white font-bold truncate inline-block max-w-[120px]" title={videoMetadata.fileName}>
                       {videoMetadata.fileName}
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-400">SIZE: </span>
-                    <span className="text-white font-bold">{videoMetadata.fileSize}</span>
+                    <span className="text-slate-500 dark:text-slate-400">SIZE: </span>
+                    <span className="text-slate-950 dark:text-white font-bold">{videoMetadata.fileSize}</span>
                   </div>
                   {videoMetadata.duration && (
                     <div>
-                      <span className="text-slate-400">DURATION: </span>
-                      <span className="text-emerald-300 font-bold">{videoMetadata.duration}</span>
+                      <span className="text-slate-500 dark:text-slate-400">DURATION: </span>
+                      <span className="text-emerald-600 dark:text-emerald-300 font-bold">{videoMetadata.duration}</span>
                     </div>
                   )}
                   {videoMetadata.resolution && (
                     <div>
-                      <span className="text-slate-400">RES: </span>
-                      <span className="text-amber-300 font-bold">{videoMetadata.resolution}</span>
+                      <span className="text-slate-500 dark:text-slate-400">RES: </span>
+                      <span className="text-amber-600 dark:text-amber-300 font-bold">{videoMetadata.resolution}</span>
                     </div>
                   )}
                 </div>
@@ -458,14 +483,14 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                 <div className="flex items-center justify-between text-xs font-mono">
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="text-emerald-400 hover:text-emerald-300 hover:underline font-semibold flex items-center gap-1 cursor-pointer"
+                    className="text-emerald-600 dark:text-emerald-400 hover:underline font-semibold flex items-center gap-1 cursor-pointer"
                   >
                     <RefreshCw className="w-3 h-3" />
                     Replace Video
                   </button>
                   <button
                     onClick={handleClear}
-                    className="text-slate-400 hover:text-rose-400 transition-colors flex items-center gap-1 cursor-pointer"
+                    className="text-slate-500 hover:text-rose-500 transition-colors flex items-center gap-1 cursor-pointer"
                   >
                     <Trash2 className="w-3 h-3" />
                     Clear Video
@@ -484,13 +509,11 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
               id="flight-video-file-input"
             />
 
-            {/* ============================================================ */}
-            {/* REQUIRED RECONSTRUCTION SETTINGS CONTROLS (PHASE 3) */}
-            {/* ============================================================ */}
-            <div className="pt-3 border-t border-white/10 space-y-4">
+            {/* RECONSTRUCTION SETTINGS CONTROLS */}
+            <div className="pt-3 border-t border-slate-200 dark:border-white/10 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-slate-200 flex items-center gap-1.5">
-                  <Sliders className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="font-mono text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                  <Sliders className="w-3.5 h-3.5 text-emerald-500" />
                   Reconstruction Settings
                 </span>
                 <Badge variant="slate" isPill={false}>VGGT Params</Badge>
@@ -531,8 +554,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
               {/* Controls 4, 5, 6, 7: Switches Grid */}
               <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
-                {/* Control 4: Show Camera */}
-                <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
+                <div className="p-3 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">
                   <Switch
                     label="Show Camera"
                     checked={settings.showCamera}
@@ -540,8 +562,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                   />
                 </div>
 
-                {/* Control 5: Filter Sky */}
-                <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
+                <div className="p-3 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">
                   <Switch
                     label="Filter Sky"
                     checked={settings.filterSky}
@@ -549,8 +570,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                   />
                 </div>
 
-                {/* Control 6: Filter Black Background */}
-                <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
+                <div className="p-3 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">
                   <Switch
                     label="Filter Black BG"
                     checked={settings.filterBlackBackground}
@@ -558,8 +578,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                   />
                 </div>
 
-                {/* Control 7: Filter White Background */}
-                <div className="p-3 rounded-2xl bg-white/5 border border-white/10">
+                <div className="p-3 rounded-2xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10">
                   <Switch
                     label="Filter White BG"
                     checked={settings.filterWhiteBackground}
@@ -571,22 +590,21 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
           </div>
 
           {/* Action Button Group: RECONSTRUCT, UPDATE VISUAL, CLEAR */}
-          <div className="pt-6 border-t border-white/10 space-y-2.5">
-            <Button
-              variant="tactical"
-              className="w-full"
-              size="md"
+          <div className="pt-6 border-t border-slate-200 dark:border-white/10 space-y-2.5">
+            <button
               disabled={reconstructionState === 'empty' || reconstructionState === 'processing'}
-              isLoading={reconstructionState === 'processing'}
-              iconLeft={<Play className="w-4 h-4 fill-slate-950" />}
               onClick={handleReconstruct}
+              className="w-full py-3.5 rounded-full bg-slate-950 hover:bg-slate-800 disabled:opacity-40 disabled:cursor-not-allowed text-white font-sans text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg hover:scale-[1.01] active:scale-95 transition-all"
             >
-              {reconstructionState === 'processing'
-                ? 'Reconstructing...'
-                : reconstructionState === 'ready'
-                ? 'Re-Run Reconstruction'
-                : 'Reconstruct'}
-            </Button>
+              <Play className="w-4 h-4 fill-current" />
+              <span>
+                {reconstructionState === 'processing'
+                  ? 'Reconstructing...'
+                  : reconstructionState === 'ready'
+                  ? 'Re-Run Reconstruction'
+                  : 'Reconstruct'}
+              </span>
+            </button>
 
             <div className="grid grid-cols-2 gap-2.5">
               <Button
@@ -616,15 +634,15 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
           className={`${
             isMaximized
               ? 'fixed inset-0 z-[9999] w-screen h-screen bg-slate-950 flex flex-col m-0 rounded-none border-0 shadow-none'
-              : 'lg:col-span-7 rounded-3xl bg-slate-950/90 backdrop-blur-2xl border border-white/15 shadow-[0_20px_60px_rgba(0,0,0,0.7)] overflow-hidden flex flex-col relative min-h-[440px]'
+              : 'lg:col-span-7 rounded-3xl bg-slate-950 backdrop-blur-2xl border border-black/10 dark:border-white/12 shadow-[0_20px_50px_rgba(0,0,0,0.2)] overflow-hidden flex flex-col relative min-h-[460px]'
           }`}
         >
           {/* Viewer Window Header */}
-          <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 bg-slate-900/90 border-b border-slate-800 text-xs font-mono text-slate-300 shrink-0">
+          <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs font-mono text-slate-300 shrink-0">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-rose-500/80 inline-block" />
-              <span className="w-2 h-2 rounded-full bg-amber-500/80 inline-block" />
-              <span className="w-2 h-2 rounded-full bg-emerald-500/80 inline-block" />
+              <span className="w-2 h-2 rounded-full bg-rose-500 inline-block" />
+              <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
               <span className="ml-1.5 font-bold text-white text-[11px] sm:text-xs tracking-wider">
                 3D RECONSTRUCTION VIEWER
               </span>
@@ -795,28 +813,28 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
             {/* REFERENCE STYLE: 4 Callout Telemetry Pins */}
             <div className="pointer-events-none absolute inset-0 hidden sm:block">
-              {/* Pin 1: Foldable Design */}
+              {/* Pin 1: Autonomous Flight Navigation */}
               <div className="absolute top-10 left-12 flex flex-col items-center animate-pulse">
                 <span className="px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/20 text-[10px] font-sans font-medium text-white shadow-lg">
-                  Foldable Design
+                  Autonomous Swarm
                 </span>
                 <div className="w-px h-6 bg-gradient-to-b from-white/40 to-emerald-400" />
                 <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
               </div>
 
-              {/* Pin 2: 60 Min Flight Time */}
+              {/* Pin 2: Real-Time Telemetry */}
               <div className="absolute top-8 right-24 flex flex-col items-center">
                 <span className="px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/20 text-[10px] font-sans font-medium text-white shadow-lg">
-                  60 Min Flight Time
+                  Sub-cm Precision
                 </span>
                 <div className="w-px h-8 bg-gradient-to-b from-white/40 to-emerald-400" />
                 <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
               </div>
 
-              {/* Pin 3: Obstacle Sensors */}
+              {/* Pin 3: Multi-Drone Mesh */}
               <div className="absolute top-36 right-20 flex flex-col items-center">
                 <span className="px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/20 text-[10px] font-sans font-medium text-white shadow-lg">
-                  Obstacle Sensors
+                  Neural Point Cloud
                 </span>
                 <div className="w-px h-6 bg-gradient-to-b from-white/40 to-emerald-400" />
                 <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
@@ -827,56 +845,8 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                 <div className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
                 <div className="w-px h-6 bg-gradient-to-t from-white/40 to-emerald-400" />
                 <span className="px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/20 text-[10px] font-sans font-medium text-white shadow-lg">
-                  4K Ultra HD Camera
+                  4K Aerial Camera Pose
                 </span>
-              </div>
-            </div>
-
-            {/* REFERENCE STYLE: Right Floating Preview Thumbnail Stack */}
-            <div className="absolute top-8 right-3 sm:right-4 flex flex-col gap-2.5 z-20 pointer-events-auto">
-              <div
-                onClick={() => {
-                  const el = document.getElementById('examples');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="w-12 sm:w-16 h-12 sm:h-16 rounded-xl sm:rounded-2xl border-2 border-white/30 hover:border-emerald-400 overflow-hidden shadow-xl bg-slate-900 cursor-pointer hover:scale-105 active:scale-95 transition-all group"
-                title="Night Flight Telemetry Scan"
-              >
-                <img
-                  src="/images/drone_thumb_1.jpg"
-                  alt="Night UAV Scan"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-
-              <div
-                onClick={() => {
-                  const el = document.getElementById('pipeline');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="w-12 sm:w-16 h-12 sm:h-16 rounded-xl sm:rounded-2xl border-2 border-white/30 hover:border-emerald-400 overflow-hidden shadow-xl bg-slate-900 cursor-pointer hover:scale-105 active:scale-95 transition-all group"
-                title="Urban 3D Mesh Point Cloud"
-              >
-                <img
-                  src="/images/drone_thumb_2.jpg"
-                  alt="City 3D Point Cloud"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
-              </div>
-
-              <div
-                onClick={() => {
-                  const el = document.getElementById('workflow');
-                  el?.scrollIntoView({ behavior: 'smooth' });
-                }}
-                className="w-12 sm:w-16 h-12 sm:h-16 rounded-xl sm:rounded-2xl border-2 border-white/30 hover:border-emerald-400 overflow-hidden shadow-xl bg-slate-900 cursor-pointer hover:scale-105 active:scale-95 transition-all group"
-                title="Aerial LiDAR Reconnaissance"
-              >
-                <img
-                  src="/images/drone_thumb_3.jpg"
-                  alt="LiDAR Mountain Survey"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                />
               </div>
             </div>
 
@@ -941,7 +911,6 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
             </div>
           </div>
         </div>
-      </div>
       </div>
     </section>
   );

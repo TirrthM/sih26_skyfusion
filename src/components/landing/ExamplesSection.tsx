@@ -30,36 +30,36 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
 }) => {
   return (
     <section id="examples" className="scroll-mt-28 py-16 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
-      {/* Header & Exact Instruction Text */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-4 border-white/10">
+      {/* Header & Instruction Text */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-4 border-slate-300 dark:border-white/10">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Badge variant="emerald" hasDot>
-              Pre-Configured Drone Datasets
+              Pre-Configured Datasets
             </Badge>
-            <span className="text-xs font-mono text-slate-400">5 Ready Scans</span>
+            <span className="text-xs font-mono text-slate-600 dark:text-slate-400">5 Ready Scans</span>
           </div>
-          <h2 className="font-display text-2xl sm:text-3xl font-black text-white">
+          <h2 className="font-display text-2xl sm:text-3xl font-black text-slate-950 dark:text-white">
             Examples
           </h2>
-          <p className="text-xs sm:text-sm font-mono text-emerald-400 font-bold mt-1">
-            Click any row to load an example.
+          <p className="text-xs sm:text-sm font-mono text-emerald-600 dark:text-emerald-400 font-bold mt-1">
+            Click any row to load an example into the 3D workspace.
           </p>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-400">
-          <Database className="w-4 h-4 text-emerald-400" />
+        <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-600 dark:text-slate-400">
+          <Database className="w-4 h-4 text-emerald-500" />
           <span>Interactive Dataset Benchmarks</span>
         </div>
       </div>
 
       {/* Interactive Examples Table Container */}
-      <div className="rounded-3xl bg-slate-950/80 backdrop-blur-2xl border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] overflow-hidden">
+      <div className="rounded-3xl bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border border-black/10 dark:border-white/15 shadow-[0_15px_35px_rgba(0,0,0,0.06)] overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse min-w-[850px]">
             {/* Table Header */}
             <thead>
-              <tr className="border-b border-white/10 bg-white/5 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+              <tr className="border-b border-slate-200 dark:border-white/10 bg-slate-50/80 dark:bg-white/5 text-[11px] font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                 <th className="py-4 px-5">Upload Video / Example</th>
                 <th className="py-4 px-3 text-center">Video Sampling FPS</th>
                 <th className="py-4 px-3 text-center">Confidence Threshold</th>
@@ -73,7 +73,7 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
             </thead>
 
             {/* Table Body */}
-            <tbody className="divide-y divide-white/5 text-xs font-mono">
+            <tbody className="divide-y divide-slate-200 dark:divide-white/5 text-xs font-mono">
               {RECONSTRUCTION_EXAMPLES.map((ex) => {
                 const isSelected = selectedExampleId === ex.id;
                 return (
@@ -89,24 +89,24 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                     }}
                     className={`group transition-all cursor-pointer select-none ${
                       isSelected
-                        ? 'bg-emerald-950/40 border-l-4 border-l-emerald-400'
-                        : 'hover:bg-white/5'
+                        ? 'bg-emerald-50 dark:bg-emerald-950/40 border-l-4 border-l-emerald-500'
+                        : 'hover:bg-slate-50/80 dark:hover:bg-white/5'
                     }`}
                   >
                     {/* Column 1: Video Name & Thumbnail Indicator */}
                     <td className="py-4 px-5">
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-950 font-bold border border-white/20 shrink-0 shadow-md"
+                          className="w-9 h-9 rounded-xl flex items-center justify-center text-slate-950 font-bold border border-black/10 dark:border-white/20 shrink-0 shadow-sm"
                           style={{ backgroundColor: ex.thumbnailColor }}
                         >
-                          <Film className="w-4 h-4" />
+                          <Film className="w-4 h-4 text-slate-950" />
                         </div>
                         <div>
-                          <div className="font-display font-bold text-sm text-white group-hover:text-emerald-400 transition-colors">
+                          <div className="font-display font-bold text-sm text-slate-950 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">
                             {ex.name}
                           </div>
-                          <div className="text-[11px] text-slate-400 flex items-center gap-1.5 font-sans">
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 font-sans">
                             <span>{ex.videoFileName}</span>
                             <span>•</span>
                             <span>{ex.resolution}</span>
@@ -116,12 +116,12 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                     </td>
 
                     {/* Column 2: Video Sampling FPS */}
-                    <td className="py-4 px-3 text-center font-bold text-white">
+                    <td className="py-4 px-3 text-center font-bold text-slate-900 dark:text-white">
                       {ex.samplingFps.toFixed(1)} FPS
                     </td>
 
                     {/* Column 3: Confidence Threshold (%) */}
-                    <td className="py-4 px-3 text-center font-bold text-emerald-400">
+                    <td className="py-4 px-3 text-center font-bold text-emerald-600 dark:text-emerald-400">
                       {ex.confidenceThreshold}%
                     </td>
 
@@ -130,8 +130,8 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                       <span
                         className={`inline-flex items-center justify-center w-5 h-5 rounded-md ${
                           ex.filterBlackBackground
-                            ? 'bg-emerald-950/70 text-emerald-400 border border-emerald-400/40 shadow-xs'
-                            : 'bg-white/5 text-slate-600'
+                            ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-400/40'
+                            : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-600'
                         }`}
                       >
                         {ex.filterBlackBackground ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
@@ -143,8 +143,8 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                       <span
                         className={`inline-flex items-center justify-center w-5 h-5 rounded-md ${
                           ex.filterWhiteBackground
-                            ? 'bg-emerald-950/70 text-emerald-400 border border-emerald-400/40 shadow-xs'
-                            : 'bg-white/5 text-slate-600'
+                            ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-400/40'
+                            : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-600'
                         }`}
                       >
                         {ex.filterWhiteBackground ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
@@ -156,8 +156,8 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                       <span
                         className={`inline-flex items-center justify-center w-5 h-5 rounded-md ${
                           ex.showCamera
-                            ? 'bg-sky-950/70 text-sky-400 border border-sky-400/40 shadow-xs'
-                            : 'bg-white/5 text-slate-600'
+                            ? 'bg-sky-100 dark:bg-sky-950/70 text-sky-700 dark:text-sky-400 border border-sky-300 dark:border-sky-400/40'
+                            : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-600'
                         }`}
                       >
                         {ex.showCamera ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
@@ -169,8 +169,8 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                       <span
                         className={`inline-flex items-center justify-center w-5 h-5 rounded-md ${
                           ex.filterSky
-                            ? 'bg-emerald-950/70 text-emerald-400 border border-emerald-400/40 shadow-xs'
-                            : 'bg-white/5 text-slate-600'
+                            ? 'bg-emerald-100 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-400/40'
+                            : 'bg-slate-100 dark:bg-white/5 text-slate-400 dark:text-slate-600'
                         }`}
                       >
                         {ex.filterSky ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
@@ -178,7 +178,7 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                     </td>
 
                     {/* Column 8: Max Points */}
-                    <td className="py-4 px-3 text-center font-bold text-amber-300">
+                    <td className="py-4 px-3 text-center font-bold text-amber-600 dark:text-amber-300">
                       {ex.maxPoints}K
                     </td>
 
@@ -187,8 +187,8 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                       <button
                         className={`px-4 py-1.5 rounded-full text-xs font-mono font-bold transition-all ${
                           isSelected
-                            ? 'bg-emerald-400 text-slate-950 shadow-[0_0_15px_rgba(52,211,153,0.5)]'
-                            : 'bg-white/10 text-white border border-white/20 hover:bg-white/20 hover:border-emerald-400/50'
+                            ? 'bg-emerald-500 text-white shadow-md'
+                            : 'bg-slate-900 dark:bg-white/10 text-white border border-transparent dark:border-white/20 hover:bg-emerald-600'
                         }`}
                       >
                         {isSelected ? 'Loaded' : 'Load →'}

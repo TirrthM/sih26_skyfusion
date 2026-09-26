@@ -57,7 +57,7 @@ export const CapabilitiesGrid: React.FC = () => {
       title: 'Real-Time Spatial Computer Vision',
       category: 'PERCEPTION',
       description:
-        'On-the-fly volumetric measurement, structural integrity anomaly detection, thermal hotspot tracking, and automatic object segmentation.',
+        'On-the-fly volumetric measurement, structural integrity anomaly detection, crop health analysis, and automatic object segmentation.',
       icon: Eye,
       badgeVariant: 'emerald' as const,
       cardVariant: 'accent-emerald' as const,
@@ -99,10 +99,10 @@ export const CapabilitiesGrid: React.FC = () => {
         <Badge variant="emerald" hasDot>
           Aerospace Capabilities
         </Badge>
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-950 dark:text-white">
           Engineered for Extreme Spatial Precision.
         </h2>
-        <p className="text-slate-300 text-sm sm:text-base font-sans">
+        <p className="text-slate-600 dark:text-slate-300 text-sm sm:text-base font-sans">
           SkyFusion unifies autonomous drone fleet coordination with state-of-the-art neural 3D scene reconstruction.
         </p>
       </motion.div>
@@ -122,28 +122,28 @@ export const CapabilitiesGrid: React.FC = () => {
               <Card
                 variant={cap.cardVariant}
                 isInteractive
-                className="flex flex-col justify-between w-full group hover:border-emerald-400/50"
+                className="flex flex-col justify-between w-full group hover:border-emerald-500/50"
               >
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white shadow-inner group-hover:scale-105 group-hover:border-emerald-400/50 transition-all">
-                      <Icon className="w-6 h-6 text-emerald-400" />
+                    <div className="w-12 h-12 rounded-2xl bg-emerald-50 dark:bg-white/10 border border-emerald-200 dark:border-white/20 flex items-center justify-center text-slate-950 dark:text-white shadow-sm group-hover:scale-105 group-hover:border-emerald-500/50 transition-all">
+                      <Icon className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
                     </div>
                     <Badge variant={cap.badgeVariant}>{cap.category}</Badge>
                   </div>
 
-                  <h3 className="font-display text-xl font-bold text-white leading-snug group-hover:text-emerald-300 transition-colors">
+                  <h3 className="font-display text-xl font-bold text-slate-950 dark:text-white leading-snug group-hover:text-emerald-600 dark:group-hover:text-emerald-300 transition-colors">
                     {cap.title}
                   </h3>
 
-                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                     {cap.description}
                   </p>
                 </div>
 
-                <div className="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-mono">
-                  <span className="text-slate-400">BENCHMARK:</span>
-                  <span className="font-bold text-emerald-300">{cap.stat}</span>
+                <div className="pt-6 mt-6 border-t border-slate-200 dark:border-white/10 flex items-center justify-between text-xs font-mono">
+                  <span className="text-slate-500 dark:text-slate-400">BENCHMARK:</span>
+                  <span className="font-bold text-emerald-600 dark:text-emerald-300">{cap.stat}</span>
                 </div>
               </Card>
             </motion.div>

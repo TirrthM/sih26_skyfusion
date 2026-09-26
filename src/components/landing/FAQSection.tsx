@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ChevronDown, Plus, Minus } from 'lucide-react';
+import { Plus, Minus } from 'lucide-react';
 import { Badge } from '../ui/Badge';
 
 export const FAQSection: React.FC = () => {
@@ -36,7 +36,7 @@ export const FAQSection: React.FC = () => {
         <Badge variant="emerald" hasDot>
           Technical Clarifications
         </Badge>
-        <h2 className="font-display text-3xl sm:text-4xl font-black tracking-tight text-white">
+        <h2 className="font-display text-3xl sm:text-4xl font-black tracking-tight text-slate-950 dark:text-white">
           Frequently Asked Questions.
         </h2>
       </div>
@@ -47,30 +47,30 @@ export const FAQSection: React.FC = () => {
           return (
             <div
               key={idx}
-              className={`rounded-3xl bg-slate-950/80 backdrop-blur-2xl border transition-all duration-300 overflow-hidden ${
+              className={`rounded-3xl bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl border transition-all duration-300 overflow-hidden ${
                 isOpen
-                  ? 'border-emerald-400/50 shadow-[0_0_30px_rgba(16,185,129,0.15)]'
-                  : 'border-white/15 hover:border-white/30 shadow-[0_15px_35px_rgba(0,0,0,0.5)]'
+                  ? 'border-emerald-500/50 shadow-[0_10px_30px_rgba(16,185,129,0.12)]'
+                  : 'border-black/10 dark:border-white/15 hover:border-emerald-500/30 shadow-[0_15px_35px_rgba(0,0,0,0.06)]'
               }`}
             >
               <button
                 onClick={() => setOpenIdx(isOpen ? null : idx)}
-                className="w-full flex items-center justify-between p-6 sm:p-7 text-left hover:bg-white/5 transition-colors cursor-pointer"
+                className="w-full flex items-center justify-between p-6 sm:p-7 text-left hover:bg-slate-50/80 dark:hover:bg-white/5 transition-colors cursor-pointer"
               >
-                <span className="font-display font-bold text-base sm:text-lg text-white pr-4">
+                <span className="font-display font-bold text-base sm:text-lg text-slate-950 dark:text-white pr-4">
                   {faq.q}
                 </span>
                 <span className={`shrink-0 w-9 h-9 rounded-2xl border flex items-center justify-center transition-all ${
                   isOpen
-                    ? 'bg-emerald-400 text-slate-950 border-emerald-300 shadow-[0_0_15px_rgba(52,211,153,0.4)]'
-                    : 'bg-white/10 text-white border-white/20'
+                    ? 'bg-emerald-500 text-white border-emerald-400 shadow-md'
+                    : 'bg-slate-100 dark:bg-white/10 text-slate-800 dark:text-white border-slate-300 dark:border-white/20'
                 }`}>
                   {isOpen ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                 </span>
               </button>
 
               {isOpen && (
-                <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-2 text-sm sm:text-base font-sans text-slate-300 leading-relaxed border-t border-white/10">
+                <div className="px-6 sm:px-7 pb-6 sm:pb-7 pt-2 text-sm sm:text-base font-sans text-slate-600 dark:text-slate-300 leading-relaxed border-t border-slate-200 dark:border-white/10">
                   {faq.a}
                 </div>
               )}

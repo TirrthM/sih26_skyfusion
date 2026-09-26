@@ -313,7 +313,7 @@ export const ContinuousDroneBackground: React.FC = () => {
     <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
       <canvas
         ref={canvasRef}
-        className="w-full h-full block opacity-75 dark:opacity-85 transition-opacity"
+        className="w-full h-full block opacity-40 dark:opacity-50 transition-opacity"
       />
     </div>
   );
