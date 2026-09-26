@@ -9,6 +9,7 @@ import { PipelineDemo } from '@/components/landing/PipelineDemo';
 import { WorkflowSteps } from '@/components/landing/WorkflowSteps';
 import { FAQSection } from '@/components/landing/FAQSection';
 import { LandingFooter } from '@/components/landing/LandingFooter';
+import { ContinuousDroneBackground } from '@/components/canvas/ContinuousDroneBackground';
 import {
   ReconstructionSettings,
   DEFAULT_RECONSTRUCTION_SETTINGS,
@@ -44,12 +45,15 @@ export default function SingleHomePage() {
   };
 
   return (
-    <div className="min-h-screen bg-tactical-grid flex flex-col selection:bg-sf-cyan selection:text-slate-950">
+    <div className="min-h-screen relative flex flex-col selection:bg-sf-cyan selection:text-slate-950 overflow-x-hidden">
+      {/* Continuous Autonomous UAV Swarm Flight Canvas Background */}
+      <ContinuousDroneBackground />
+
       {/* Sticky Top Mission Navigation */}
       <LandingNav />
 
       {/* Main Single-Page Product Flow */}
-      <main className="flex-1">
+      <main className="flex-1 relative z-10">
         {/* 1. Tagline & Real Reconstruction Workspace with VGGT Controls */}
         <ReconstructionWorkspace
           settings={settings}

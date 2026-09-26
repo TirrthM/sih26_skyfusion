@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { Plane, Cpu, Box, Share2, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Badge } from '../ui/Badge';
 import { Card } from '../ui/Card';
 
@@ -43,49 +44,63 @@ export const WorkflowSteps: React.FC = () => {
 
   return (
     <section id="workflow" className="scroll-mt-28 py-20 px-4 md:px-8 max-w-7xl mx-auto">
-      <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="text-center max-w-3xl mx-auto mb-16 space-y-3"
+      >
         <Badge variant="emerald" hasDot>
           Flight to Digital Twin
         </Badge>
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-950 dark:text-white">
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
           4 Steps. Zero Setup Hassle.
         </h2>
-        <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base font-sans">
+        <p className="text-slate-300 text-sm sm:text-base font-sans">
           From takeoff to a high-fidelity interactive 3D model in under 2 minutes.
         </p>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
         {steps.map((item, idx) => {
           const Icon = item.icon;
           return (
-            <Card
+            <motion.div
               key={item.step}
-              variant="tactical"
-              className="flex flex-col justify-between relative group hover:-translate-y-1 transition-all"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.4, delay: idx * 0.1, ease: 'easeOut' }}
+              className="h-full flex"
             >
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <span className="w-10 h-10 rounded-xl bg-slate-900 text-sf-cyan border-2 border-slate-950 flex items-center justify-center font-mono font-bold text-sm shadow-tactile-sm-light">
-                    {item.step}
-                  </span>
-                  <Badge variant="slate">{item.tag}</Badge>
+              <Card
+                variant="tactical"
+                className="flex flex-col justify-between relative group hover:-translate-y-1.5 hover:border-emerald-400/50 transition-all w-full"
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <span className="w-10 h-10 rounded-2xl bg-white/10 text-emerald-300 border border-white/20 flex items-center justify-center font-mono font-bold text-sm shadow-[0_0_15px_rgba(16,185,129,0.2)] group-hover:scale-105 group-hover:border-emerald-400/50 transition-all">
+                      {item.step}
+                    </span>
+                    <Badge variant="slate">{item.tag}</Badge>
+                  </div>
+
+                  <h3 className="font-display text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
+                    {item.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    {item.description}
+                  </p>
                 </div>
 
-                <h3 className="font-display text-lg font-bold text-slate-900 dark:text-white mb-2">
-                  {item.title}
-                </h3>
-
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-mono text-slate-500">
-                <span>STAGE {item.step} / 04</span>
-                <Icon className="w-4 h-4 text-sf-cyan" />
-              </div>
-            </Card>
+                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-xs font-mono text-slate-400">
+                  <span>STAGE {item.step} / 04</span>
+                  <Icon className="w-4 h-4 text-emerald-400" />
+                </div>
+              </Card>
+            </motion.div>
           );
         })}
       </div>

@@ -7,40 +7,38 @@
   --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-jetbrains-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-  /* Theme color variables */
-  --bg-primary: #F8F9FA;
+  /* Theme color variables - Professional Aerospace Titanium & Stealth Obsidian */
+  --bg-primary: #F8FAFC;
   --bg-surface: #FFFFFF;
   --bg-surface-subtle: #F1F5F9;
-  --border-color: #0F172A;
+  --border-color: #E2E8F0;
   --text-primary: #0F172A;
   --text-secondary: #475569;
   --text-muted: #64748B;
-  --shadow-tactile: 4px 4px 0px #0F172A;
-  --shadow-tactile-sm: 2px 2px 0px #0F172A;
-  --shadow-tactile-lg: 6px 6px 0px #0F172A;
+  --shadow-tactile: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+  --shadow-tactile-sm: 0 2px 8px -1px rgba(15, 23, 42, 0.06);
+  --shadow-tactile-lg: 0 12px 32px -4px rgba(15, 23, 42, 0.12);
   --accent-cyan: #0284C7;
-  --accent-indigo: #4F46E5;
+  --accent-indigo: #3B82F6;
   --accent-amber: #D97706;
   --accent-emerald: #059669;
-  --grid-line-color: rgba(15, 23, 42, 0.06);
 }
 
 .dark {
-  --bg-primary: #080B11;
-  --bg-surface: #0F1420;
-  --bg-surface-subtle: #151C2C;
-  --border-color: #1E293B;
+  --bg-primary: #040711;
+  --bg-surface: #0A101D;
+  --bg-surface-subtle: #0E1626;
+  --border-color: rgba(51, 65, 85, 0.5);
   --text-primary: #F8FAFC;
   --text-secondary: #94A3B8;
   --text-muted: #64748B;
-  --shadow-tactile: 4px 4px 0px #1E293B;
-  --shadow-tactile-sm: 2px 2px 0px #1E293B;
-  --shadow-tactile-lg: 6px 6px 0px #1E293B;
-  --accent-cyan: #38BDF8;
-  --accent-indigo: #818CF8;
-  --accent-amber: #FBBF24;
-  --accent-emerald: #34D399;
-  --grid-line-color: rgba(255, 255, 255, 0.04);
+  --shadow-tactile: 0 8px 32px 0 rgba(0, 0, 0, 0.45);
+  --shadow-tactile-sm: 0 4px 16px 0 rgba(0, 0, 0, 0.35);
+  --shadow-tactile-lg: 0 20px 48px 0 rgba(0, 0, 0, 0.6);
+  --accent-cyan: #06B6D4;
+  --accent-indigo: #60A5FA;
+  --accent-amber: #F59E0B;
+  --accent-emerald: #10B981;
 }
 
 body {
@@ -48,63 +46,72 @@ body {
   color: var(--text-primary);
   font-family: var(--font-inter);
   overflow-x: hidden;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  background: linear-gradient(to bottom, rgba(248, 250, 252, 0.9), rgba(241, 245, 249, 0.96)), url('/images/cinematic_drone_landscape.jpg') center/cover no-repeat fixed;
+  transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Tactical Background Grid Patterns */
-.bg-tactical-grid {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+.dark body {
+  background: linear-gradient(to bottom, rgba(4, 7, 17, 0.78), rgba(4, 7, 17, 0.92)), url('/images/cinematic_drone_landscape.jpg') center/cover no-repeat fixed;
+  background-attachment: fixed;
 }
 
-.bg-radial-telemetry-dark {
-  background: radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.12) 0%, rgba(99, 102, 241, 0.05) 45%, transparent 70%);
+/* Smooth Page Transitions */
+.reveal-fade-in {
+  animation: fadeIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.bg-radial-telemetry-light {
-  background: radial-gradient(circle at 50% 10%, rgba(37, 99, 235, 0.08) 0%, rgba(245, 158, 11, 0.04) 45%, transparent 70%);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* Custom Tactical Neubrutalist Classes */
+/* Custom Tactical Glassmorphism Classes */
 .tactile-card {
-  border: 2px solid #0F172A;
-  box-shadow: 4px 4px 0px #0F172A;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .dark .tactile-card {
-  border: 1.5px solid #1E293B;
-  box-shadow: 4px 4px 0px #0F1420;
+  border: 1px solid rgba(51, 65, 85, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: rgba(11, 18, 32, 0.7);
+  backdrop-filter: blur(12px);
 }
 .tactile-card:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0px #0F172A;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -4px rgba(15, 23, 42, 0.12);
 }
 .dark .tactile-card:hover {
-  border-color: #38BDF8;
-  box-shadow: 4px 4px 16px rgba(56, 189, 248, 0.15);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.12);
 }
 
 .tactile-btn {
-  border: 2px solid #0F172A;
-  box-shadow: 3px 3px 0px #0F172A;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.08);
+  transition: all 0.15s ease;
 }
 .dark .tactile-btn {
-  border: 1.5px solid #38BDF8;
-  box-shadow: 3px 3px 0px rgba(56, 189, 248, 0.4);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.15);
+  backdrop-filter: blur(8px);
 }
 .tactile-btn:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #0F172A;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px -1px rgba(15, 23, 42, 0.14);
 }
 .dark .tactile-btn:hover {
-  box-shadow: 4px 4px 10px rgba(56, 189, 248, 0.6);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+  border-color: #38BDF8;
 }
 .tactile-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px #0F172A;
+  transform: translateY(1px);
 }
 
 /* Custom Scrollbar */

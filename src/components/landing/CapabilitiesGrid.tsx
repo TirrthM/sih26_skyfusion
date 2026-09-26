@@ -13,6 +13,7 @@ import {
   Cpu,
   Eye,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Card } from '../ui/Card';
 import { Badge } from '../ui/Badge';
 
@@ -88,50 +89,64 @@ export const CapabilitiesGrid: React.FC = () => {
 
   return (
     <section id="capabilities" className="scroll-mt-28 py-20 px-4 md:px-8 max-w-7xl mx-auto">
-      <div className="text-center max-w-3xl mx-auto mb-16 space-y-3">
-        <Badge variant="indigo" hasDot>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: '-60px' }}
+        transition={{ duration: 0.5, ease: 'easeOut' }}
+        className="text-center max-w-3xl mx-auto mb-16 space-y-3"
+      >
+        <Badge variant="emerald" hasDot>
           Aerospace Capabilities
         </Badge>
-        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-950 dark:text-white">
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
           Engineered for Extreme Spatial Precision.
         </h2>
-        <p className="text-slate-600 dark:text-slate-400 text-sm sm:text-base font-sans">
+        <p className="text-slate-300 text-sm sm:text-base font-sans">
           SkyFusion unifies autonomous drone fleet coordination with state-of-the-art neural 3D scene reconstruction.
         </p>
-      </div>
+      </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {capabilities.map((cap) => {
+        {capabilities.map((cap, index) => {
           const Icon = cap.icon;
           return (
-            <Card
+            <motion.div
               key={cap.id}
-              variant={cap.cardVariant}
-              isInteractive
-              className="flex flex-col justify-between"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ duration: 0.4, delay: index * 0.08, ease: 'easeOut' }}
+              className="h-full flex"
             >
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="w-12 h-12 rounded-xl bg-slate-100 dark:bg-sf-surface-darkMuted border-2 border-slate-950 dark:border-sf-border-dark flex items-center justify-center text-slate-900 dark:text-white shadow-tactile-sm-light dark:shadow-tactile-sm-dark">
-                    <Icon className="w-6 h-6 text-sf-cyan" />
+              <Card
+                variant={cap.cardVariant}
+                isInteractive
+                className="flex flex-col justify-between w-full group hover:border-emerald-400/50"
+              >
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="w-12 h-12 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white shadow-inner group-hover:scale-105 group-hover:border-emerald-400/50 transition-all">
+                      <Icon className="w-6 h-6 text-emerald-400" />
+                    </div>
+                    <Badge variant={cap.badgeVariant}>{cap.category}</Badge>
                   </div>
-                  <Badge variant={cap.badgeVariant}>{cap.category}</Badge>
+
+                  <h3 className="font-display text-xl font-bold text-white leading-snug group-hover:text-emerald-300 transition-colors">
+                    {cap.title}
+                  </h3>
+
+                  <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                    {cap.description}
+                  </p>
                 </div>
 
-                <h3 className="font-display text-xl font-bold text-slate-900 dark:text-white leading-snug">
-                  {cap.title}
-                </h3>
-
-                <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
-                  {cap.description}
-                </p>
-              </div>
-
-              <div className="pt-6 mt-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs font-mono">
-                <span className="text-slate-500">BENCHMARK:</span>
-                <span className="font-bold text-slate-900 dark:text-sf-cyan">{cap.stat}</span>
-              </div>
-            </Card>
+                <div className="pt-6 mt-6 border-t border-white/10 flex items-center justify-between text-xs font-mono">
+                  <span className="text-slate-400">BENCHMARK:</span>
+                  <span className="font-bold text-emerald-300">{cap.stat}</span>
+                </div>
+              </Card>
+            </motion.div>
           );
         })}
       </div>

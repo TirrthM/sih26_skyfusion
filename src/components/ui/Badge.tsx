@@ -16,24 +16,24 @@ export const Badge: React.FC<BadgeProps> = ({
   isPill = true,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center gap-1.5 font-mono text-xs font-semibold px-2.5 py-1 select-none border uppercase tracking-wider';
+  const baseStyles = 'inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold px-2.5 py-0.5 select-none border uppercase tracking-wider transition-colors';
 
   const variantStyles = {
-    cyan: 'bg-sky-100 text-sky-900 border-sky-600 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-500/40',
-    indigo: 'bg-indigo-100 text-indigo-900 border-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-500/40',
-    amber: 'bg-amber-100 text-amber-900 border-amber-600 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-500/40',
-    emerald: 'bg-emerald-100 text-emerald-900 border-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-500/40',
-    rose: 'bg-rose-100 text-rose-900 border-rose-600 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-500/40',
-    slate: 'bg-slate-100 text-slate-900 border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600',
+    cyan: 'bg-sky-950/70 text-sky-300 border-sky-400/40 shadow-[0_0_12px_rgba(56,189,248,0.2)]',
+    indigo: 'bg-indigo-950/70 text-indigo-300 border-indigo-400/40 shadow-[0_0_12px_rgba(99,102,241,0.2)]',
+    amber: 'bg-amber-950/70 text-amber-300 border-amber-400/40 shadow-[0_0_12px_rgba(245,158,11,0.2)]',
+    emerald: 'bg-emerald-950/70 text-emerald-300 border-emerald-400/40 shadow-[0_0_12px_rgba(16,185,129,0.2)]',
+    rose: 'bg-rose-950/70 text-rose-300 border-rose-400/40 shadow-[0_0_12px_rgba(244,63,94,0.2)]',
+    slate: 'bg-slate-900/80 text-slate-200 border-white/20 shadow-sm',
   };
 
   const dotColors = {
-    cyan: 'bg-sky-500 shadow-[0_0_8px_#38bdf8]',
-    indigo: 'bg-indigo-500 shadow-[0_0_8px_#6366f1]',
-    amber: 'bg-amber-500 shadow-[0_0_8px_#f59e0b]',
-    emerald: 'bg-emerald-500 shadow-[0_0_8px_#10b981]',
-    rose: 'bg-rose-500 shadow-[0_0_8px_#f43f5e]',
-    slate: 'bg-slate-500',
+    cyan: 'bg-sky-400 shadow-[0_0_8px_#38bdf8]',
+    indigo: 'bg-indigo-400 shadow-[0_0_8px_#6366f1]',
+    amber: 'bg-amber-400 shadow-[0_0_8px_#f59e0b]',
+    emerald: 'bg-emerald-400 shadow-[0_0_8px_#10b981]',
+    rose: 'bg-rose-400 shadow-[0_0_8px_#f43f5e]',
+    slate: 'bg-slate-400',
   };
 
   return (

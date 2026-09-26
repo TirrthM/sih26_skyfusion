@@ -26,10 +26,10 @@ export const Switch: React.FC<SwitchProps> = ({
       {(label || description) && (
         <div className="flex flex-col">
           {label && (
-            <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{label}</span>
+            <span className="text-xs font-semibold text-slate-200">{label}</span>
           )}
           {description && (
-            <span className="text-xs text-slate-500 dark:text-slate-400">{description}</span>
+            <span className="text-[11px] text-slate-400">{description}</span>
           )}
         </div>
       )}
@@ -40,14 +40,14 @@ export const Switch: React.FC<SwitchProps> = ({
         disabled={disabled}
         onClick={() => !disabled && onChange(!checked)}
         className={clsx(
-          'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border-2 border-slate-950 transition-colors focus:outline-none focus:ring-2 focus:ring-sf-cyan focus:ring-offset-2',
-          checked ? 'bg-sf-cyan' : 'bg-slate-300 dark:bg-slate-700'
+          'relative inline-flex h-5 w-10 shrink-0 items-center rounded-full border border-white/20 transition-colors focus:outline-none focus:ring-2 focus:ring-emerald-400/50',
+          checked ? 'bg-emerald-400' : 'bg-slate-800/90'
         )}
       >
         <span
           className={clsx(
-            'inline-block h-4 w-4 transform rounded-full bg-white dark:bg-slate-950 border border-slate-900 transition-transform',
-            checked ? 'translate-x-6' : 'translate-x-1'
+            'inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-md transition-transform',
+            checked ? 'translate-x-5' : 'translate-x-1'
           )}
         />
       </button>

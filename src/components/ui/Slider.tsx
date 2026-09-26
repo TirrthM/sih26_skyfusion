@@ -26,11 +26,11 @@ export const Slider: React.FC<SliderProps> = ({
     <div className="w-full space-y-2">
       <div className="flex justify-between items-center text-xs font-mono">
         {label && (
-          <span className="font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          <span className="font-bold text-slate-200 uppercase tracking-wider text-[11px]">
             {label}
           </span>
         )}
-        <span className="font-bold text-sf-cyan px-2 py-0.5 rounded bg-slate-200 dark:bg-sf-surface-dark border border-slate-400 dark:border-slate-700">
+        <span className="font-bold text-emerald-300 px-2.5 py-0.5 rounded-full bg-emerald-950/60 border border-emerald-500/40 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
           {valueDisplay !== undefined ? valueDisplay : value}
         </span>
       </div>
@@ -42,7 +42,7 @@ export const Slider: React.FC<SliderProps> = ({
         value={value}
         disabled={disabled}
         onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-full h-2 bg-slate-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sf-cyan"
+        className="w-full h-2 bg-slate-800/80 rounded-lg appearance-none cursor-pointer accent-emerald-400 border border-white/10"
         {...props}
       />
     </div>

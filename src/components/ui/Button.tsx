@@ -26,27 +26,27 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     ref
   ) => {
     const baseStyles =
-      'inline-flex items-center justify-center font-medium rounded-lg transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed select-none';
+      'inline-flex items-center justify-center font-sans font-semibold rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-emerald-400/50 disabled:opacity-40 disabled:cursor-not-allowed select-none tracking-wide';
 
     const sizeStyles = {
-      sm: 'text-xs px-3 py-1.5 gap-1.5 font-semibold',
-      md: 'text-sm px-4 py-2 gap-2 font-medium',
-      lg: 'text-base px-6 py-3 gap-2.5 font-semibold',
+      sm: 'text-xs px-4 py-2 gap-1.5 font-bold',
+      md: 'text-sm px-6 py-2.5 gap-2 font-bold',
+      lg: 'text-base px-8 py-3.5 gap-2.5 font-bold',
     };
 
     const variantStyles = {
       primary:
-        'bg-sf-indigo text-white hover:bg-sf-indigo-hover border-2 border-slate-950 shadow-tactile-light dark:border-sf-border-dark dark:shadow-tactile-indigo active:translate-y-0.5',
+        'bg-white text-slate-950 hover:bg-slate-100 border border-white shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:shadow-[0_0_25px_rgba(255,255,255,0.5)] active:scale-95',
       secondary:
-        'bg-slate-100 dark:bg-sf-surface-darkMuted text-slate-900 dark:text-slate-100 hover:bg-slate-200 dark:hover:bg-slate-800 border-2 border-slate-950 dark:border-sf-border-dark shadow-tactile-light dark:shadow-tactile-dark active:translate-y-0.5',
+        'bg-white/10 text-white hover:bg-white/20 border border-white/20 shadow-md backdrop-blur-md active:scale-95',
       tactical:
-        'bg-sf-cyan text-slate-950 font-semibold hover:bg-sf-cyan-hover border-2 border-slate-950 shadow-tactile-light dark:border-sf-cyan dark:shadow-tactile-cyan active:translate-y-0.5',
+        'bg-emerald-400 text-slate-950 font-bold hover:bg-emerald-300 border-none shadow-[0_0_25px_rgba(52,211,153,0.4)] hover:shadow-[0_0_35px_rgba(52,211,153,0.6)] active:scale-95',
       outline:
-        'bg-transparent text-slate-900 dark:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800/60 border-2 border-slate-950 dark:border-slate-700 active:translate-y-0.5',
+        'bg-transparent text-white hover:bg-white/10 border border-white/30 backdrop-blur-sm active:scale-95',
       danger:
-        'bg-sf-rose text-white hover:bg-sf-rose-hover border-2 border-slate-950 shadow-tactile-light dark:border-sf-rose active:translate-y-0.5',
+        'bg-rose-500 text-white hover:bg-rose-600 border border-rose-400 shadow-[0_0_20px_rgba(244,63,94,0.4)] active:scale-95',
       ghost:
-        'bg-transparent text-slate-700 dark:text-slate-300 hover:bg-slate-200/60 dark:hover:bg-slate-800/60 border-transparent',
+        'bg-transparent text-slate-300 hover:text-white hover:bg-white/10 border-transparent active:scale-95',
     };
 
     return (

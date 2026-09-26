@@ -1,11 +1,11 @@
 /** @type {import('next').NextConfig} */
-const isProd = process.env.NODE_ENV === 'production';
+const isGithubActions = process.env.GITHUB_ACTIONS === 'true';
 
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['three', '@react-three/fiber', '@react-three/drei'],
   output: 'export',
-  basePath: isProd ? '/sih26_skyfusion' : '',
+  basePath: isGithubActions ? '/sih26_skyfusion' : '',
   images: {
     unoptimized: true,
   },

@@ -14,25 +14,25 @@ export const Card: React.FC<CardProps> = ({
   isInteractive = false,
   ...props
 }) => {
-  const baseStyles = 'rounded-xl p-6 transition-all duration-200 relative overflow-hidden';
+  const baseStyles = 'rounded-3xl p-6 sm:p-7 transition-all duration-300 relative overflow-hidden backdrop-blur-2xl';
 
   const variantStyles = {
     default:
-      'bg-white dark:bg-sf-surface-dark border-2 border-slate-950 dark:border-sf-border-dark shadow-tactile-light dark:shadow-tactile-dark',
+      'bg-slate-950/70 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-white',
     tactical:
-      'bg-slate-50 dark:bg-sf-surface-darkMuted border-2 border-slate-950 dark:border-sf-border-darkBright shadow-tactile-light dark:shadow-tactile-dark',
+      'bg-slate-950/75 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-white hover:border-emerald-400/40',
     'accent-cyan':
-      'bg-white dark:bg-sf-surface-dark border-2 border-slate-950 dark:border-sf-cyan/40 shadow-tactile-light dark:shadow-tactile-cyan hover:border-sf-cyan',
+      'bg-slate-950/75 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-white hover:border-sky-400/60 hover:shadow-[0_0_35px_rgba(56,189,248,0.25)]',
     'accent-amber':
-      'bg-white dark:bg-sf-surface-dark border-2 border-slate-950 dark:border-sf-amber/40 shadow-tactile-light dark:shadow-tactile-amber hover:border-sf-amber',
+      'bg-slate-950/75 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-white hover:border-amber-400/60 hover:shadow-[0_0_35px_rgba(245,158,11,0.25)]',
     'accent-emerald':
-      'bg-white dark:bg-sf-surface-dark border-2 border-slate-950 dark:border-sf-emerald/40 shadow-tactile-light dark:shadow-tactile-emerald hover:border-sf-emerald',
+      'bg-slate-950/75 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-white hover:border-emerald-400/60 hover:shadow-[0_0_35px_rgba(16,185,129,0.25)]',
     'accent-indigo':
-      'bg-white dark:bg-sf-surface-dark border-2 border-slate-950 dark:border-sf-indigo/40 shadow-tactile-light dark:shadow-tactile-indigo hover:border-sf-indigo',
+      'bg-slate-950/75 border border-white/15 shadow-[0_20px_50px_rgba(0,0,0,0.6)] text-white hover:border-indigo-400/60 hover:shadow-[0_0_35px_rgba(99,102,241,0.25)]',
   };
 
   const interactiveStyles = isInteractive
-    ? 'hover:-translate-y-1 hover:shadow-tactile-lg-light dark:hover:shadow-hud-cyan cursor-pointer'
+    ? 'hover:-translate-y-1.5 cursor-pointer'
     : '';
 
   return (
