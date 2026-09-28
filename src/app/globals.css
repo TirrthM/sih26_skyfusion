@@ -7,53 +7,54 @@
   --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-jetbrains-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-  /* Theme color variables - Farmdrone Smart Aerial Theme */
-  --bg-primary: #b8d2e3;
+  /* Reference Palette - Farmdrone Smart Aerial Theme */
+  --sf-air: #F1F8F9;
+  --sf-sky: #93B8D3;
+  --sf-blue: #659AC1;
+  --sf-deep-blue: #37699F;
+  --sf-dark: #0B100D;
+  --sf-deep-green: #31514F;
+  --sf-green: #5B8769;
+
+  /* CSS Theme Tokens */
+  --bg-primary: #F1F8F9;
   --bg-surface: #FFFFFF;
   --bg-surface-subtle: #F8FAFC;
-  --border-color: rgba(0, 0, 0, 0.08);
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #64748B;
-  --shadow-tactile: 0 10px 30px -4px rgba(15, 23, 42, 0.08);
-  --shadow-tactile-sm: 0 4px 12px -2px rgba(15, 23, 42, 0.05);
-  --shadow-tactile-lg: 0 20px 45px -8px rgba(15, 23, 42, 0.12);
-  --accent-cyan: #0284C7;
-  --accent-indigo: #3B82F6;
-  --accent-amber: #D97706;
-  --accent-emerald: #059669;
+  --border-color: rgba(55, 105, 159, 0.12);
+  --text-primary: #0B100D;
+  --text-secondary: #31514F;
+  --text-muted: #5B8769;
+  --shadow-tactile: 0 10px 30px -4px rgba(55, 105, 159, 0.08);
+  --shadow-tactile-sm: 0 4px 12px -2px rgba(55, 105, 159, 0.05);
+  --shadow-tactile-lg: 0 20px 45px -8px rgba(55, 105, 159, 0.12);
 }
 
 .dark {
-  --bg-primary: #050b14;
-  --bg-surface: #0a111e;
-  --bg-surface-subtle: #0f1828;
+  --bg-primary: #0B100D;
+  --bg-surface: #121A17;
+  --bg-surface-subtle: #17221E;
   --border-color: rgba(255, 255, 255, 0.12);
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
+  --text-primary: #F1F8F9;
+  --text-secondary: #93B8D3;
+  --text-muted: #659AC1;
   --shadow-tactile: 0 12px 36px 0 rgba(0, 0, 0, 0.45);
   --shadow-tactile-sm: 0 6px 20px 0 rgba(0, 0, 0, 0.35);
   --shadow-tactile-lg: 0 24px 50px 0 rgba(0, 0, 0, 0.6);
-  --accent-cyan: #06B6D4;
-  --accent-indigo: #60A5FA;
-  --accent-amber: #F59E0B;
-  --accent-emerald: #10B981;
 }
 
-/* ─── Farmdrone Ambient Background Canvas ─── */
+/* ─── Ambient Atmospheric Background Canvas ─── */
 body {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-inter);
   overflow-x: hidden;
-  background: radial-gradient(circle at 50% 0%, #cde1ee 0%, #b4cee0 60%, #9cbcd2 100%);
+  background: radial-gradient(circle at 50% -10%, #E2F0F4 0%, #D2E7EE 45%, #B8D6E5 80%, #93B8D3 100%);
   min-height: 100vh;
   transition: background-color 0.3s cubic-bezier(0.16, 1, 0.3, 1), color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .dark body {
-  background: radial-gradient(circle at 50% 0%, #0d1a2d 0%, #060b14 65%, #020509 100%);
+  background: radial-gradient(circle at 50% -10%, #15222E 0%, #0E181F 50%, #0B100D 100%);
 }
 
 /* Smooth Page Transitions */
@@ -90,87 +91,41 @@ body {
   animation: sectionReveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Custom Tactical Glassmorphism Classes */
+/* Glassmorphic Cards */
 .tactile-card {
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 10px 30px -4px rgba(15, 23, 42, 0.08);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(55, 105, 159, 0.12);
+  box-shadow: 0 10px 30px -4px rgba(55, 105, 159, 0.08);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
 }
 .dark .tactile-card {
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.4);
-  background: rgba(11, 18, 32, 0.7);
+  background: rgba(18, 26, 23, 0.75);
   backdrop-filter: blur(20px);
 }
 .tactile-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 16px 36px -4px rgba(15, 23, 42, 0.14);
+  box-shadow: 0 16px 36px -4px rgba(55, 105, 159, 0.14);
 }
 .dark .tactile-card:hover {
-  border-color: rgba(16, 185, 129, 0.4);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(16, 185, 129, 0.12);
-}
-
-.tactile-btn {
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.08);
-  transition: all 0.15s ease;
-}
-.dark .tactile-btn {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
-  backdrop-filter: blur(8px);
-}
-.tactile-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px -1px rgba(15, 23, 42, 0.14);
-}
-.dark .tactile-btn:hover {
-  box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
-}
-.tactile-btn:active {
-  transform: translateY(1px);
-}
-
-/* ─── Glassmorphic Hover Shimmer ─── */
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-.glass-shimmer:hover::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  background: linear-gradient(
-    120deg,
-    transparent 20%,
-    rgba(255, 255, 255, 0.05) 40%,
-    rgba(255, 255, 255, 0.12) 50%,
-    rgba(255, 255, 255, 0.05) 60%,
-    transparent 80%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 1.5s ease-in-out;
-  pointer-events: none;
+  border-color: rgba(91, 135, 105, 0.4);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.4);
+  background: rgba(91, 135, 105, 0.35);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.7);
+  background: rgba(91, 135, 105, 0.6);
 }

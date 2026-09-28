@@ -8,6 +8,7 @@ import { CapabilitiesGrid } from '@/components/landing/CapabilitiesGrid';
 import { PipelineDemo } from '@/components/landing/PipelineDemo';
 import { WorkflowSteps } from '@/components/landing/WorkflowSteps';
 import { FAQSection } from '@/components/landing/FAQSection';
+import { DesignSystemPreview } from '@/components/landing/DesignSystemPreview';
 import { LandingFooter } from '@/components/landing/LandingFooter';
 import { ContinuousDroneBackground } from '@/components/canvas/ContinuousDroneBackground';
 import {
@@ -33,7 +34,7 @@ export default function SingleHomePage() {
     });
 
     // Smoothly focus / scroll to reconstruction workspace so user sees 3D model
-    const el = document.getElementById('reconstruction');
+    const el = document.getElementById('upload-panel') || document.getElementById('reconstruction');
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
     }
@@ -45,7 +46,7 @@ export default function SingleHomePage() {
   };
 
   return (
-    <div className="min-h-screen relative flex flex-col selection:bg-sf-cyan selection:text-slate-950 overflow-x-hidden">
+    <div className="min-h-screen relative flex flex-col selection:bg-[#659AC1] selection:text-white overflow-x-hidden">
       {/* Continuous Autonomous UAV Swarm Flight Canvas Background */}
       <ContinuousDroneBackground />
 
@@ -53,8 +54,8 @@ export default function SingleHomePage() {
       <LandingNav />
 
       {/* Main Single-Page Product Flow */}
-      <main className="flex-1 relative z-10">
-        {/* 1. Tagline & Real Reconstruction Workspace with VGGT Controls */}
+      <main className="flex-1 relative z-10 space-y-4">
+        {/* 1. Cinematic Hero Showcase & 2. 2-Column Reconstruction Workspace with VGGT Controls */}
         <ReconstructionWorkspace
           settings={settings}
           onSettingsChange={setSettings}
@@ -62,26 +63,29 @@ export default function SingleHomePage() {
           onResetWorkspace={handleResetWorkspace}
         />
 
-        {/* 2. Interactive Examples Section (Click any row to load an example) */}
+        {/* 3. Interactive Examples Section (Click any row to load an example) */}
         <ExamplesSection
           selectedExampleId={selectedExample?.id || null}
           onSelectExample={handleSelectExample}
         />
 
-        {/* 3. Core Capabilities */}
+        {/* 4. Core Capabilities */}
         <CapabilitiesGrid />
 
-        {/* 4. Interactive 3D Pipeline */}
+        {/* 5. Interactive 3D Pipeline */}
         <PipelineDemo />
 
-        {/* 5. 4-Step Autonomous Workflow */}
+        {/* 6. 4-Step Autonomous Workflow */}
         <WorkflowSteps />
 
-        {/* 6. Frequently Asked Questions */}
+        {/* 7. Frequently Asked Questions */}
         <FAQSection />
+
+        {/* 8. Design System Tokens Preview */}
+        <DesignSystemPreview />
       </main>
 
-      {/* Tactical Footer */}
+      {/* 9. Landing Footer */}
       <LandingFooter />
     </div>
   );
