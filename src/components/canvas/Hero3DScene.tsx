@@ -26,25 +26,24 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({
   showFrustums = true,
   showFlightPath = true,
   showDrone = true,
-  pointCount = 4200,
+  pointCount = 1800,
 }) => {
   return (
     <>
       {/* Dynamic Lighting */}
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[10, 15, 8]} intensity={1.2} color="#FFFFFF" />
-      <pointLight position={[-8, 6, -6]} intensity={0.8} color="#38BDF8" />
-      <pointLight position={[6, 8, 6]} intensity={0.5} color="#818CF8" />
+      <ambientLight intensity={0.7} />
+      <directionalLight position={[10, 15, 8]} intensity={1.0} color="#FFFFFF" />
+      <pointLight position={[-6, 5, -6]} intensity={0.6} color="#659AC1" />
 
       {/* Orbit Controls with bounded damping */}
       <OrbitControls
         enableDamping
-        dampingFactor={0.05}
+        dampingFactor={0.08}
         maxPolarAngle={Math.PI / 2 - 0.05} // Keep camera above terrain
         minDistance={4}
         maxDistance={24}
         autoRotate={!reducedMotion}
-        autoRotateSpeed={0.5}
+        autoRotateSpeed={0.4}
       />
 
       {/* 3D Scene Layers */}

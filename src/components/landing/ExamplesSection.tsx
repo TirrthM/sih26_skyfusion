@@ -5,19 +5,16 @@ import {
   Film,
   Check,
   X,
-  Sparkles,
-  ArrowRight,
-  Database,
-  Layers,
-  Camera,
-  Sliders,
+  ArrowUpRight,
+  HardDrive,
+  Clock,
 } from 'lucide-react';
-import { Badge } from '../ui/Badge';
-import { Card } from '../ui/Card';
+import { motion } from 'framer-motion';
 import {
   ReconstructionExample,
   RECONSTRUCTION_EXAMPLES,
 } from '@/services/examplesData';
+import { fadeUp } from '@/utils/motionVariants';
 
 export interface ExamplesSectionProps {
   selectedExampleId?: string | null;
@@ -29,51 +26,49 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
   onSelectExample,
 }) => {
   return (
-    <section id="examples" className="scroll-mt-28 py-16 px-4 md:px-8 max-w-7xl mx-auto space-y-6">
-      {/* Header & Exact Instruction Text */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-4 border-slate-200 dark:border-slate-800">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <Badge variant="cyan" hasDot>
-              Pre-Configured Drone Datasets
-            </Badge>
-            <span className="text-xs font-mono text-slate-500">5 Ready Scans</span>
-          </div>
-          <h2 className="font-display text-2xl sm:text-3xl font-black text-slate-900 dark:text-white">
-            Examples
-          </h2>
-          <p className="text-xs sm:text-sm font-mono text-sf-cyan dark:text-sf-cyan font-bold mt-1">
-            Click any row to load an example.
-          </p>
-        </div>
-
-        <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-slate-500">
-          <Database className="w-4 h-4 text-sf-cyan" />
-          <span>Interactive Dataset Benchmarks</span>
-        </div>
-      </div>
+    <section id="examples" className="scroll-mt-24 py-8 sm:py-10 md:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6">
+      {/* Centered Editorial Header */}
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-50px' }}
+        className="text-center max-w-3xl mx-auto mb-6 sm:mb-8 space-y-2"
+      >
+        <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-950 dark:text-[#F1F8F9]">
+          Benchmark Dataset Examples.
+        </h2>
+        <p className="text-slate-700 dark:text-slate-300 text-sm sm:text-base font-sans max-w-2xl mx-auto font-normal">
+          Select any verified UAV flight dataset below to load multi-angle footage, spatial telemetry, and ground truth benchmarks into the reconstruction engine.
+        </p>
+        <p className="text-xs sm:text-sm font-mono text-[#1A456E] dark:text-[#93B8D3] font-bold">
+          Click any row to load an example.
+        </p>
+      </motion.div>
 
       {/* Interactive Examples Table Container */}
-      <div className="rounded-2xl bg-white dark:bg-sf-surface-dark border-2 border-slate-950 dark:border-sf-border-dark shadow-tactile-light dark:shadow-tactile-dark overflow-hidden">
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-50px' }}
+        className="rounded-3xl bg-white dark:bg-[#142026] border border-slate-300/80 dark:border-slate-700/80 shadow-aerial dark:shadow-aerial-dark overflow-hidden"
+      >
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse min-w-[850px]">
+          <table className="w-full text-left border-collapse min-w-[720px]">
             {/* Table Header */}
             <thead>
-              <tr className="border-b-2 border-slate-950 dark:border-sf-border-dark bg-slate-100 dark:bg-sf-surface-darkMuted text-[11px] font-mono font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300">
-                <th className="py-3.5 px-4">Upload Video / Example</th>
-                <th className="py-3.5 px-3 text-center">Video Sampling FPS</th>
-                <th className="py-3.5 px-3 text-center">Confidence Threshold</th>
-                <th className="py-3.5 px-3 text-center">Filter Black BG</th>
-                <th className="py-3.5 px-3 text-center">Filter White BG</th>
-                <th className="py-3.5 px-3 text-center">Show Camera</th>
-                <th className="py-3.5 px-3 text-center">Filter Sky</th>
-                <th className="py-3.5 px-3 text-center">Max Points</th>
-                <th className="py-3.5 px-4 text-right">Action</th>
+              <tr className="border-b border-slate-200 dark:border-slate-700 bg-slate-100/90 dark:bg-[#1A2A32] text-[11px] font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                <th className="py-3.5 px-5">Dataset / Flight Video</th>
+                <th className="py-3.5 px-3 text-center">Duration</th>
+                <th className="py-3.5 px-3 text-center">Resolution</th>
+                <th className="py-3.5 px-3 text-center">File Size</th>
+                <th className="py-3.5 px-5 text-right">Action</th>
               </tr>
             </thead>
 
             {/* Table Body */}
-            <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-xs font-mono">
+            <tbody className="divide-y divide-slate-200/80 dark:divide-slate-700/60 text-xs font-mono">
               {RECONSTRUCTION_EXAMPLES.map((ex) => {
                 const isSelected = selectedExampleId === ex.id;
                 return (
@@ -87,111 +82,57 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                         onSelectExample(ex);
                       }
                     }}
-                    className={`group transition-all cursor-pointer select-none ${
+                    className={`group transition-colors duration-150 cursor-pointer select-none ${
                       isSelected
-                        ? 'bg-sky-50/80 dark:bg-sky-950/40 border-l-4 border-l-sf-cyan'
-                        : 'hover:bg-slate-50 dark:hover:bg-slate-800/50'
+                        ? 'bg-sky-50 dark:bg-[#1E3340] border-l-4 dark:border-l-[#659AC1]'
+                        : 'hover:bg-slate-50 dark:hover:bg-[#1A2A32]/60'
                     }`}
                   >
                     {/* Column 1: Video Name & Thumbnail Indicator */}
-                    <td className="py-4 px-4">
+                    <td className="py-3.5 px-5">
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-950 font-bold border border-slate-900 shrink-0 shadow-xs"
+                          className="w-8 h-8 rounded-full flex items-center justify-center text-slate-950 font-bold border border-black/10 shrink-0 shadow-xs"
                           style={{ backgroundColor: ex.thumbnailColor }}
                         >
-                          <Film className="w-4 h-4" />
+                          <Film className="w-3.5 h-3.5" />
                         </div>
                         <div>
-                          <div className="font-display font-bold text-sm text-slate-900 dark:text-white group-hover:text-sf-cyan transition-colors">
+                          <div className="font-display font-bold text-sm text-slate-950 dark:text-white group-hover:text-[#1A456E] dark:group-hover:text-[#93B8D3] transition-colors">
                             {ex.name}
                           </div>
-                          <div className="text-[11px] text-slate-500 flex items-center gap-1.5 font-sans">
-                            <span>{ex.videoFileName}</span>
-                            <span>•</span>
-                            <span>{ex.resolution}</span>
+                          <div className="text-[11px] text-slate-600 dark:text-[#94A3B8] font-sans mt-0.5">
+                            {ex.videoFileName}
                           </div>
                         </div>
                       </div>
                     </td>
 
-                    {/* Column 2: Video Sampling FPS */}
-                    <td className="py-4 px-3 text-center font-bold text-slate-800 dark:text-slate-200">
-                      {ex.samplingFps.toFixed(1)} FPS
+                    {/* Column 3: Duration */}
+                    <td className="py-3.5 px-3 text-center text-slate-800 dark:text-slate-200 font-semibold">
+                      {ex.duration}
                     </td>
 
-                    {/* Column 3: Confidence Threshold (%) */}
-                    <td className="py-4 px-3 text-center font-bold text-sf-cyan">
-                      {ex.confidenceThreshold}%
+                    {/* Column 4: Resolution */}
+                    <td className="py-3.5 px-3 text-center text-[#1A456E] dark:text-[#93B8D3] font-bold">
+                      {ex.resolution}
                     </td>
 
-                    {/* Column 4: Filter Black Background */}
-                    <td className="py-4 px-3 text-center">
-                      <span
-                        className={`inline-flex items-center justify-center w-5 h-5 rounded-md ${
-                          ex.filterBlackBackground
-                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-500/40'
-                            : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-600'
-                        }`}
-                      >
-                        {ex.filterBlackBackground ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                      </span>
+                    {/* Column 5: File Size */}
+                    <td className="py-3.5 px-3 text-center text-slate-700 dark:text-[#CBD5E1] font-medium">
+                      {ex.fileSize}
                     </td>
 
-                    {/* Column 5: Filter White Background */}
-                    <td className="py-4 px-3 text-center">
-                      <span
-                        className={`inline-flex items-center justify-center w-5 h-5 rounded-md ${
-                          ex.filterWhiteBackground
-                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-500/40'
-                            : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-600'
-                        }`}
-                      >
-                        {ex.filterWhiteBackground ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                      </span>
-                    </td>
-
-                    {/* Column 6: Show Camera */}
-                    <td className="py-4 px-3 text-center">
-                      <span
-                        className={`inline-flex items-center justify-center w-5 h-5 rounded-md ${
-                          ex.showCamera
-                            ? 'bg-sky-100 text-sky-700 dark:bg-sky-950/60 dark:text-sky-400 border border-sky-500/40'
-                            : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-600'
-                        }`}
-                      >
-                        {ex.showCamera ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                      </span>
-                    </td>
-
-                    {/* Column 7: Filter Sky */}
-                    <td className="py-4 px-3 text-center">
-                      <span
-                        className={`inline-flex items-center justify-center w-5 h-5 rounded-md ${
-                          ex.filterSky
-                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-500/40'
-                            : 'bg-slate-100 text-slate-400 dark:bg-slate-800 dark:text-slate-600'
-                        }`}
-                      >
-                        {ex.filterSky ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
-                      </span>
-                    </td>
-
-                    {/* Column 8: Max Points */}
-                    <td className="py-4 px-3 text-center font-bold text-sf-amber">
-                      {ex.maxPoints}K
-                    </td>
-
-                    {/* Column 9: Load Action Button */}
-                    <td className="py-4 px-4 text-right">
+                    {/* Column 6: Load Action Button */}
+                    <td className="py-3.5 px-5 text-right">
                       <button
-                        className={`px-3 py-1.5 rounded-lg text-xs font-mono font-bold transition-all border ${
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-mono font-bold transition-all cursor-pointer ${
                           isSelected
-                            ? 'bg-sf-cyan text-slate-950 border-slate-950 shadow-xs'
-                            : 'bg-slate-100 dark:bg-sf-surface-darkMuted text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700 group-hover:border-sf-cyan'
+                            ? 'bg-[#0B100D] text-white dark:bg-[#F1F8F9] dark:text-[#0B100D] shadow-xs'
+                            : 'bg-slate-100 dark:bg-[#1A2A32] text-slate-800 dark:text-slate-200 border border-slate-300/80 dark:border-slate-600 hover:bg-[#37699F] hover:text-white dark:hover:bg-[#37699F] dark:hover:text-white shadow-xs'
                         }`}
                       >
-                        {isSelected ? 'Loaded' : 'Load →'}
+                        {isSelected ? 'Loaded ✓' : 'Load →'}
                       </button>
                     </td>
                   </tr>
@@ -200,7 +141,7 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
             </tbody>
           </table>
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 };

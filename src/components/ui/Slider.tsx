@@ -26,25 +26,27 @@ export const Slider: React.FC<SliderProps> = ({
     <div className="w-full space-y-2">
       <div className="flex justify-between items-center text-xs font-mono">
         {label && (
-          <span className="font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+          <span className="font-medium text-slate-700 dark:text-slate-300">
             {label}
           </span>
         )}
-        <span className="font-bold text-sf-cyan px-2 py-0.5 rounded bg-slate-200 dark:bg-sf-surface-dark border border-slate-400 dark:border-slate-700">
+        <span className="font-semibold text-xs font-mono text-[#294F77] dark:text-[#93B8D3] px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-sf-dark-surfaceMuted border border-black/5 dark:border-white/10">
           {valueDisplay !== undefined ? valueDisplay : value}
         </span>
       </div>
-      <input
-        type="range"
-        min={min}
-        max={max}
-        step={step}
-        value={value}
-        disabled={disabled}
-        onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-full h-2 bg-slate-300 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sf-cyan"
-        {...props}
-      />
+      <div className="relative flex items-center py-1">
+        <input
+          type="range"
+          min={min}
+          max={max}
+          step={step}
+          value={value}
+          disabled={disabled}
+          onChange={(e) => onChange(parseFloat(e.target.value))}
+          className="w-full h-1.5 bg-slate-200 dark:bg-sf-dark-border rounded-full appearance-none cursor-pointer accent-[#659AC1] dark:accent-[#93B8D3] transition-all"
+          {...props}
+        />
+      </div>
     </div>
   );
 };

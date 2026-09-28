@@ -7,40 +7,57 @@
   --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-jetbrains-mono: 'JetBrains Mono', 'Fira Code', monospace;
 
-  /* Theme color variables */
-  --bg-primary: #F8F9FA;
+  /* SkyFusion Aerial Theme (Light Mode - Rich Atmospheric Depth & High Contrast) */
+  --bg-primary: #EBF2F6;
   --bg-surface: #FFFFFF;
-  --bg-surface-subtle: #F1F5F9;
-  --border-color: #0F172A;
-  --text-primary: #0F172A;
-  --text-secondary: #475569;
-  --text-muted: #64748B;
-  --shadow-tactile: 4px 4px 0px #0F172A;
-  --shadow-tactile-sm: 2px 2px 0px #0F172A;
-  --shadow-tactile-lg: 6px 6px 0px #0F172A;
-  --accent-cyan: #0284C7;
-  --accent-indigo: #4F46E5;
-  --accent-amber: #D97706;
-  --accent-emerald: #059669;
-  --grid-line-color: rgba(15, 23, 42, 0.06);
+  --bg-surface-subtle: #F1F6F9;
+  --bg-surface-elevated: #FFFFFF;
+  
+  --border-color: rgba(15, 23, 42, 0.12);
+  --border-color-strong: rgba(15, 23, 42, 0.24);
+
+  --text-primary: #0B100D;
+  --text-secondary: #1E293B;
+  --text-muted: #475569;
+
+  --accent-sky: #659AC1;
+  --accent-blue: #37699F;
+  --accent-deep-blue: #1A456E;
+  --accent-dark: #0B100D;
+  --accent-deep-green: #31514F;
+  --accent-forest: #3E6A4C;
+
+  --shadow-aerial: 0 10px 30px -6px rgba(15, 23, 42, 0.08), 0 2px 8px -1px rgba(15, 23, 42, 0.04);
+  --shadow-aerial-lg: 0 20px 44px -10px rgba(15, 23, 42, 0.12), 0 4px 14px -2px rgba(15, 23, 42, 0.05);
+
+  --grid-line-color: rgba(55, 105, 159, 0.09);
 }
 
 .dark {
-  --bg-primary: #080B11;
-  --bg-surface: #0F1420;
-  --bg-surface-subtle: #151C2C;
-  --border-color: #1E293B;
-  --text-primary: #F8FAFC;
-  --text-secondary: #94A3B8;
-  --text-muted: #64748B;
-  --shadow-tactile: 4px 4px 0px #1E293B;
-  --shadow-tactile-sm: 2px 2px 0px #1E293B;
-  --shadow-tactile-lg: 6px 6px 0px #1E293B;
-  --accent-cyan: #38BDF8;
-  --accent-indigo: #818CF8;
-  --accent-amber: #FBBF24;
-  --accent-emerald: #34D399;
-  --grid-line-color: rgba(255, 255, 255, 0.04);
+  /* SkyFusion Aerial Theme (Dark Mode - Luminous Aerospace Slate) */
+  --bg-primary: #0D1518;
+  --bg-surface: #142026;
+  --bg-surface-subtle: #1A2A32;
+  --bg-surface-elevated: #20333D;
+
+  --border-color: rgba(147, 184, 211, 0.18);
+  --border-color-strong: rgba(101, 154, 193, 0.38);
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #CBD5E1;
+  --text-muted: #93B8D3;
+
+  --accent-sky: #93B8D3;
+  --accent-blue: #659AC1;
+  --accent-deep-blue: #37699F;
+  --accent-dark: #0D1518;
+  --accent-deep-green: #31514F;
+  --accent-forest: #5B8769;
+
+  --shadow-aerial: 0 20px 48px -10px rgba(0, 0, 0, 0.55), 0 0 1px 1px rgba(147, 184, 211, 0.18);
+  --shadow-aerial-lg: 0 28px 60px -12px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(101, 154, 193, 0.28);
+
+  --grid-line-color: rgba(147, 184, 211, 0.08);
 }
 
 body {
@@ -48,77 +65,75 @@ body {
   color: var(--text-primary);
   font-family: var(--font-inter);
   overflow-x: hidden;
-  transition: background-color 0.25s ease, color 0.25s ease;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-/* Tactical Background Grid Patterns */
-.bg-tactical-grid {
-  background-size: 32px 32px;
+/* Atmospheric Aerial Canvas Environments */
+.bg-aerial-canvas-light {
+  background-color: #EBF2F6;
+  background-image: 
+    radial-gradient(ellipse 90% 60% at 50% -5%, rgba(101, 154, 193, 0.22) 0%, rgba(235, 242, 246, 0) 70%),
+    radial-gradient(circle 700px at 12% 28%, rgba(91, 135, 105, 0.12) 0%, transparent 60%),
+    radial-gradient(circle 800px at 88% 65%, rgba(55, 105, 159, 0.14) 0%, transparent 70%);
+}
+
+.bg-aerial-canvas-dark {
+  background-color: #0D1518;
+  background-image: 
+    radial-gradient(ellipse 85% 55% at 50% -8%, rgba(55, 105, 159, 0.35) 0%, rgba(13, 21, 24, 0) 70%),
+    radial-gradient(circle 700px at 15% 30%, rgba(91, 135, 105, 0.20) 0%, transparent 60%),
+    radial-gradient(circle 800px at 85% 70%, rgba(101, 154, 193, 0.18) 0%, transparent 70%);
+}
+
+/* Subtle Spatial Grid Texture */
+.bg-aerial-grid {
+  background-size: 36px 36px;
   background-image: 
     linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
 }
 
-.bg-radial-telemetry-dark {
-  background: radial-gradient(circle at 50% 10%, rgba(56, 189, 248, 0.12) 0%, rgba(99, 102, 241, 0.05) 45%, transparent 70%);
+/* Frosted Glass Floating Navbar & Cards */
+.glass-panel-light {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(15, 23, 42, 0.12);
+  box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);
 }
 
-.bg-radial-telemetry-light {
-  background: radial-gradient(circle at 50% 10%, rgba(37, 99, 235, 0.08) 0%, rgba(245, 158, 11, 0.04) 45%, transparent 70%);
+.glass-panel-dark {
+  background: rgba(20, 32, 38, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(147, 184, 211, 0.18);
+  box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.55), 0 0 1px 1px rgba(147, 184, 211, 0.18);
 }
 
-/* Custom Tactical Neubrutalist Classes */
-.tactile-card {
-  border: 2px solid #0F172A;
-  box-shadow: 4px 4px 0px #0F172A;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.dark .tactile-card {
-  border: 1.5px solid #1E293B;
-  box-shadow: 4px 4px 0px #0F1420;
-}
-.tactile-card:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 5px 5px 0px #0F172A;
-}
-.dark .tactile-card:hover {
-  border-color: #38BDF8;
-  box-shadow: 4px 4px 16px rgba(56, 189, 248, 0.15);
+/* Premium Surface Shadows & Borders */
+.aerial-card {
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-surface);
+  box-shadow: var(--shadow-aerial);
+  transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1), box-shadow 0.2s cubic-bezier(0.2, 0, 0, 1), border-color 0.2s ease;
 }
 
-.tactile-btn {
-  border: 2px solid #0F172A;
-  box-shadow: 3px 3px 0px #0F172A;
-  transition: transform 0.1s ease, box-shadow 0.1s ease;
-}
-.dark .tactile-btn {
-  border: 1.5px solid #38BDF8;
-  box-shadow: 3px 3px 0px rgba(56, 189, 248, 0.4);
-}
-.tactile-btn:hover {
-  transform: translate(-1px, -1px);
-  box-shadow: 4px 4px 0px #0F172A;
-}
-.dark .tactile-btn:hover {
-  box-shadow: 4px 4px 10px rgba(56, 189, 248, 0.6);
-}
-.tactile-btn:active {
-  transform: translate(2px, 2px);
-  box-shadow: 1px 1px 0px #0F172A;
+.aerial-card:hover {
+  border-color: var(--border-color-strong);
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.4);
-  border-radius: 4px;
+  background: rgba(55, 105, 159, 0.35);
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.7);
+  background: rgba(55, 105, 159, 0.6);
 }

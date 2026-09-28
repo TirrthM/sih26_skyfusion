@@ -13,20 +13,19 @@ import {
   Camera,
   Layers,
   Sparkles,
-  Sliders,
   Check,
   Clock,
   Eye,
-  Sun,
-  Moon,
-  Filter,
   Maximize2,
   Minimize2,
+  Compass,
+  ShieldAlert,
+  Binary,
+  FileSpreadsheet,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
-import { Slider } from '../ui/Slider';
-import { Switch } from '../ui/Switch';
 import { SceneCanvas } from '../canvas/SceneCanvas';
 import { Hero3DScene } from '../canvas/Hero3DScene';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -42,6 +41,7 @@ import {
   DEFAULT_RECONSTRUCTION_SETTINGS,
   ReconstructionExample,
 } from '@/services/examplesData';
+import { fadeUp } from '@/utils/motionVariants';
 
 export interface ReconstructionWorkspaceProps {
   settings: ReconstructionSettings;
@@ -72,7 +72,10 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isMaximized]);
+
   const [videoMetadata, setVideoMetadata] = useState<VideoInputMetadata | null>(null);
+  const [calibrationFile, setCalibrationFile] = useState<{ fileName: string; fileSize: string } | null>(null);
+  const [telemetryFile, setTelemetryFile] = useState<{ fileName: string; fileSize: string } | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [visualUpdateNotice, setVisualUpdateNotice] = useState<string | null>(null);
@@ -89,9 +92,12 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
   const [showTerrain, setShowTerrain] = useState(true);
   const [showFlightPath, setShowFlightPath] = useState(true);
   const [showDrone, setShowDrone] = useState(true);
+  const [showFrustums, setShowFrustums] = useState(true);
 
   // DOM Refs
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const calibrationInputRef = useRef<HTMLInputElement>(null);
+  const telemetryInputRef = useRef<HTMLInputElement>(null);
   const cancelProcessingRef = useRef<(() => void) | null>(null);
 
   // When an example is selected from the Examples table, load it into the workspace
@@ -107,9 +113,18 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
         mimeType: 'video/mp4',
         previewUrl: '',
       });
+      setCalibrationFile({
+        fileName: `${selectedExample.id}_calib_matrix.npy`,
+        fileSize: '24.6 KB',
+      });
+      setTelemetryFile({
+        fileName: `${selectedExample.id}_flight_telemetry.csv`,
+        fileSize: '158.2 KB',
+      });
       setReconstructionState('ready');
-      setVisualUpdateNotice(`Loaded example: ${selectedExample.name}`);
-      setTimeout(() => setVisualUpdateNotice(null), 3000);
+      setVisualUpdateNotice(`Loaded dataset & parameters: ${selectedExample.name}`);
+      const timer = setTimeout(() => setVisualUpdateNotice(null), 3000);
+      return () => clearTimeout(timer);
     }
   }, [selectedExample]);
 
@@ -157,8 +172,37 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFile(e.dataTransfer.files[0]);
+      const file = e.dataTransfer.files[0];
+      if (file.name.toLowerCase().endsWith('.npy')) {
+        handleCalibrationUpload(file);
+      } else if (file.name.toLowerCase().endsWith('.csv')) {
+        handleTelemetryUpload(file);
+      } else {
+        handleFile(file);
+      }
     }
+  };
+
+  const handleCalibrationUpload = (file: File) => {
+    if (!file.name.toLowerCase().endsWith('.npy')) {
+      setErrorMessage('Invalid calibration file. Please upload a .npy matrix file.');
+      return;
+    }
+    const sizeKB = (file.size / 1024).toFixed(1) + ' KB';
+    setCalibrationFile({ fileName: file.name, fileSize: sizeKB });
+    setVisualUpdateNotice(`Loaded calibration matrix: ${file.name}`);
+    setTimeout(() => setVisualUpdateNotice(null), 2500);
+  };
+
+  const handleTelemetryUpload = (file: File) => {
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      setErrorMessage('Invalid telemetry file. Please upload a .csv telemetry log.');
+      return;
+    }
+    const sizeKB = (file.size / 1024).toFixed(1) + ' KB';
+    setTelemetryFile({ fileName: file.name, fileSize: sizeKB });
+    setVisualUpdateNotice(`Loaded telemetry log: ${file.name}`);
+    setTimeout(() => setVisualUpdateNotice(null), 2500);
   };
 
   // Trigger Reconstruct
@@ -178,12 +222,6 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
     );
   };
 
-  // Trigger Update Visual
-  const handleUpdateVisual = () => {
-    setVisualUpdateNotice('3D visual preview updated with current settings');
-    setTimeout(() => setVisualUpdateNotice(null), 3000);
-  };
-
   // Trigger Clear / Reset
   const handleClear = () => {
     if (cancelProcessingRef.current) {
@@ -195,7 +233,15 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    if (calibrationInputRef.current) {
+      calibrationInputRef.current.value = '';
+    }
+    if (telemetryInputRef.current) {
+      telemetryInputRef.current.value = '';
+    }
     setVideoMetadata(null);
+    setCalibrationFile(null);
+    setTelemetryFile(null);
     setReconstructionState('empty');
     setErrorMessage(null);
     setProcessingStatus({
@@ -208,63 +254,54 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
     onResetWorkspace();
   };
 
-  // Settings Mutators
-  const updateSetting = <K extends keyof ReconstructionSettings>(key: K, value: ReconstructionSettings[K]) => {
-    onSettingsChange({
-      ...settings,
-      [key]: value,
-    });
-  };
-
-  // Dynamic point count mapped from settings.maxPoints (500 - 10000 K -> 1500 - 7500 3D particles)
-  const calculatedPointCount = Math.min(
-    7500,
-    Math.max(1500, Math.round(settings.maxPoints * 0.75 + (settings.confidenceThreshold / 100) * 1500))
-  );
-
   return (
     <section
       id="reconstruction"
-      className="scroll-mt-20 pt-6 sm:pt-7 md:pt-8 pb-8 px-3 sm:px-6 md:px-8 max-w-7xl mx-auto space-y-3 sm:space-y-4"
+      className="scroll-mt-24 py-8 sm:py-10 md:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-6"
     >
-      {/* Small Compact SkyFusion Tagline */}
-      <div className="text-center space-y-1 max-w-2xl mx-auto">
-        <div className="inline-flex items-center gap-2">
-          <Badge variant="cyan" hasDot>
-            SINGLE-PASS UAV 3D RECONSTRUCTION
-          </Badge>
-          <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
-            v1.0 Workstation
-          </span>
-        </div>
-        <h1 className="font-display text-lg sm:text-xl md:text-2xl font-black tracking-tight text-slate-950 dark:text-white leading-tight">
-          Transform One Drone Flight into an Explorable 3D Scene.
-        </h1>
-        <p className="text-[11px] sm:text-xs text-slate-600 dark:text-slate-400 font-sans max-w-lg mx-auto">
-          Upload a single-pass drone video to generate an interactive 3D reconstruction preview.
+      {/* Workspace Header Narrative */}
+      <motion.div
+        variants={fadeUp}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-50px' }}
+        className="text-center space-y-1.5 max-w-2xl mx-auto"
+      >
+        <h2 className="font-display text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-[#0B100D] dark:text-[#F1F8F9]">
+          Spatial Reconstruction Workstation
+        </h2>
+        <p className="text-xs sm:text-sm text-[#1E293B] dark:text-slate-300 font-sans max-w-lg mx-auto">
+          Upload flight video or select a scan below to generate an interactive 3D reconstruction preview.
         </p>
-      </div>
+      </motion.div>
 
-      {/* Main Reconstruction Workspace (2 Columns) */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-stretch">
-        {/* Left Column: Input & Settings Panel (42% width) */}
-        <div className="lg:col-span-5 flex flex-col justify-between p-6 rounded-2xl bg-white dark:bg-sf-surface-dark border-2 border-slate-950 dark:border-sf-border-darkBright shadow-tactile-light dark:shadow-tactile-dark space-y-6">
-          <div className="space-y-6">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b pb-3 border-slate-200 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-sf-cyan/15 border border-sf-cyan text-sf-cyan flex items-center justify-center">
-                  <Film className="w-4 h-4 text-sf-cyan" />
+      {/* Main Workspace: 2-Column Responsive Layout with EXACT MATCHING HEIGHTS */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-stretch">
+        {/* Left Column: Input & Upload Panel */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
+          className="lg:col-span-5 flex flex-col justify-between p-6 sm:p-7 rounded-[32px] bg-white dark:bg-[#142026] border border-slate-300/80 dark:border-slate-700/80 shadow-aerial dark:shadow-aerial-dark space-y-5 h-full"
+        >
+          <div className="space-y-4">
+            {/* Panel Top Heading & State Badge */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-700/80">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-[#659AC1]/15 text-[#204C79] dark:text-[#93B8D3] flex items-center justify-center font-bold">
+                  <Film className="w-4 h-4" />
                 </div>
                 <div>
-                  <h3 className="font-display font-bold text-sm text-slate-900 dark:text-white">
-                    Upload Flight Video
+                  <h3 className="font-display font-bold text-sm text-[#0B100D] dark:text-white">
+                    Flight Video Input
                   </h3>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 font-sans">
-                    Upload a single-pass drone video to generate a 3D reconstruction.
+                  <p className="text-[11px] text-[#4B6670] dark:text-[#CBD5E1] font-sans">
+                    Single-pass drone video source
                   </p>
                 </div>
               </div>
+
               <Badge
                 variant={
                   reconstructionState === 'ready'
@@ -279,70 +316,88 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                 {reconstructionState === 'empty'
                   ? 'NO VIDEO'
                   : reconstructionState === 'uploaded'
-                  ? 'READY'
+                  ? 'LOADED'
                   : reconstructionState === 'processing'
                   ? 'PROCESSING'
-                  : 'PREVIEW READY'}
+                  : 'READY'}
               </Badge>
             </div>
 
-            {/* Error Alert */}
-            {errorMessage && (
-              <div className="p-3 rounded-xl bg-rose-50 dark:bg-rose-950/40 border border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-300 text-xs font-mono flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>{errorMessage}</span>
-              </div>
-            )}
+            {/* Error Message Toast */}
+            <AnimatePresence>
+              {errorMessage && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  className="p-3 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-700 text-rose-800 dark:text-rose-200 text-xs font-mono flex items-center gap-2"
+                >
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>{errorMessage}</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            {/* Visual Update Toast Banner */}
-            {visualUpdateNotice && (
-              <div className="p-2.5 rounded-xl bg-sky-50 dark:bg-sky-950/40 border border-sky-300 dark:border-sky-800 text-sky-800 dark:text-sky-300 text-xs font-mono flex items-center gap-2 animate-in fade-in duration-150">
-                <Sparkles className="w-4 h-4 shrink-0 text-sf-cyan" />
-                <span>{visualUpdateNotice}</span>
-              </div>
-            )}
+            {/* Notice Toast */}
+            <AnimatePresence>
+              {visualUpdateNotice && (
+                <motion.div
+                  initial={{ opacity: 0, y: -6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  className="p-3 rounded-2xl bg-sky-50 dark:bg-[#1A2A32] border border-sky-200 dark:border-[#659AC1]/40 text-[#143252] dark:text-[#93B8D3] text-xs font-mono flex items-center gap-2"
+                >
+                  <Sparkles className="w-4 h-4 shrink-0 text-[#37699F] dark:text-[#659AC1]" />
+                  <span>{visualUpdateNotice}</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
 
-            {/* Empty Upload Dropzone */}
+            {/* Empty Upload Dropzone with rich contrast */}
             {reconstructionState === 'empty' && (
               <div
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}
                 onDrop={onDrop}
                 onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-xl p-5 text-center space-y-2 transition-all cursor-pointer select-none ${
+                className={`border-2 border-dashed rounded-3xl p-6 sm:p-8 text-center space-y-3 transition-all cursor-pointer select-none ${
                   isDragging
-                    ? 'border-sf-cyan bg-sky-50/70 dark:bg-sf-cyan/10 scale-[1.01]'
-                    : 'border-slate-300 dark:border-slate-700 bg-slate-50/50 dark:bg-sf-surface-darkMuted/50 hover:border-sf-cyan hover:bg-slate-100/50 dark:hover:bg-slate-800/40'
+                    ? 'border-[#37699F] dark:border-[#659AC1] bg-sky-50 dark:bg-[#1A2A32] scale-[1.01]'
+                    : 'border-slate-300 dark:border-slate-600 bg-slate-50/70 dark:bg-[#0D1518]/90 hover:border-[#37699F] dark:hover:border-[#659AC1] hover:bg-sky-50/50 dark:hover:bg-[#1A2A32]/60'
                 }`}
               >
-                <div className="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 border-2 border-slate-950 dark:border-slate-700 mx-auto flex items-center justify-center text-slate-700 dark:text-slate-300 shadow-tactile-sm-light dark:shadow-tactile-sm-dark">
-                  <UploadCloud className="w-6 h-6 text-sf-cyan" />
+                <div className="w-12 h-12 rounded-full bg-white dark:bg-[#1C2C34] border border-slate-200 dark:border-slate-600 mx-auto flex items-center justify-center text-[#37699F] dark:text-[#93B8D3] shadow-sm">
+                  <UploadCloud className="w-5 h-5" />
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-sm font-display font-bold text-slate-900 dark:text-white">
-                    Upload Video
+                  <p className="text-sm font-display font-bold text-[#0B100D] dark:text-white">
+                    Drop Flight Video
                   </p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400 font-sans">
-                    Drag & drop your flight video here, or click to browse
+                  <p className="text-xs text-[#4B6670] dark:text-[#CBD5E1] font-sans">
+                    Drag & drop or click to choose local footage
                   </p>
                 </div>
                 <div>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold bg-white dark:bg-sf-surface-dark border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-xs">
-                    <FileVideo className="w-3.5 h-3.5 text-sf-cyan" />
+                  <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-mono font-semibold bg-white dark:bg-[#1C2C34] border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-200 shadow-xs">
+                    <FileVideo className="w-3.5 h-3.5 text-[#37699F] dark:text-[#93B8D3]" />
                     Browse Files
                   </span>
                 </div>
-                <p className="text-[11px] font-mono text-slate-400 dark:text-slate-500">
-                  Supported formats: MP4, MOV, AVI, WebM
+                <p className="text-[10px] font-mono text-slate-500 dark:text-[#94A3B8]">
+                  Supported: MP4, MOV, AVI, WebM (4K / 1080p)
                 </p>
               </div>
             )}
 
             {/* Uploaded Video Metadata & Preview */}
             {videoMetadata && (
-              <div className="space-y-3.5 animate-in fade-in duration-200">
-                {/* Compact HTML5 Video Preview Player (or fallback for demo dataset) */}
-                <div className="rounded-xl overflow-hidden border-2 border-slate-950 dark:border-sf-border-dark bg-black shadow-tactile-sm-light dark:shadow-tactile-sm-dark relative">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="space-y-3"
+              >
+                {/* Video Preview Player */}
+                <div className="rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-black relative shadow-xs">
                   {videoMetadata.previewUrl ? (
                     <video
                       src={videoMetadata.previewUrl}
@@ -350,8 +405,8 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                       className="w-full max-h-[140px] object-contain bg-black"
                     />
                   ) : (
-                    <div className="h-[110px] flex flex-col items-center justify-center bg-slate-900 text-slate-300 space-y-2 p-3 text-center">
-                      <Film className="w-8 h-8 text-sf-cyan animate-pulse" />
+                    <div className="h-[110px] flex flex-col items-center justify-center bg-[#0D1518] text-slate-300 space-y-1.5 p-3 text-center">
+                      <Film className="w-6 h-6 text-[#93B8D3] animate-pulse" />
                       <span className="text-xs font-mono font-bold text-white">
                         {videoMetadata.fileName}
                       </span>
@@ -362,53 +417,53 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                   )}
                 </div>
 
-                {/* Video Metadata Card */}
-                <div className="p-3 rounded-xl bg-slate-100 dark:bg-sf-surface-darkMuted border border-slate-200 dark:border-slate-800 grid grid-cols-2 gap-2 text-xs font-mono">
+                {/* Metadata Pills */}
+                <div className="p-3 rounded-2xl bg-slate-100/90 dark:bg-[#1A2A32] border border-slate-200/90 dark:border-slate-700/80 grid grid-cols-2 gap-2 text-xs font-mono">
                   <div>
-                    <span className="text-slate-500">FILE: </span>
-                    <span className="text-slate-900 dark:text-white font-bold truncate inline-block max-w-[120px]" title={videoMetadata.fileName}>
+                    <span className="text-slate-500 dark:text-[#94A3B8]">FILE: </span>
+                    <span className="text-[#0B100D] dark:text-white font-bold truncate inline-block max-w-[120px]" title={videoMetadata.fileName}>
                       {videoMetadata.fileName}
                     </span>
                   </div>
                   <div>
-                    <span className="text-slate-500">SIZE: </span>
-                    <span className="text-slate-900 dark:text-white font-bold">{videoMetadata.fileSize}</span>
+                    <span className="text-slate-500 dark:text-[#94A3B8]">SIZE: </span>
+                    <span className="text-[#0B100D] dark:text-white font-bold">{videoMetadata.fileSize}</span>
                   </div>
                   {videoMetadata.duration && (
                     <div>
-                      <span className="text-slate-500">DURATION: </span>
-                      <span className="text-sf-cyan font-bold">{videoMetadata.duration}</span>
+                      <span className="text-slate-500 dark:text-[#94A3B8]">DURATION: </span>
+                      <span className="text-[#204C79] dark:text-[#93B8D3] font-bold">{videoMetadata.duration}</span>
                     </div>
                   )}
                   {videoMetadata.resolution && (
                     <div>
-                      <span className="text-slate-500">RES: </span>
-                      <span className="text-sf-amber font-bold">{videoMetadata.resolution}</span>
+                      <span className="text-slate-500 dark:text-[#94A3B8]">RES: </span>
+                      <span className="text-[#855B09] dark:text-[#FDE08B] font-bold">{videoMetadata.resolution}</span>
                     </div>
                   )}
                 </div>
 
                 {/* Quick Actions */}
-                <div className="flex items-center justify-between text-xs font-mono">
+                <div className="flex items-center justify-between text-xs font-mono pt-0.5">
                   <button
                     onClick={() => fileInputRef.current?.click()}
-                    className="text-sf-cyan hover:underline font-semibold flex items-center gap-1"
+                    className="text-[#204C79] dark:text-[#93B8D3] hover:underline font-bold flex items-center gap-1 cursor-pointer"
                   >
                     <RefreshCw className="w-3 h-3" />
                     Replace Video
                   </button>
                   <button
                     onClick={handleClear}
-                    className="text-slate-500 hover:text-sf-rose transition-colors flex items-center gap-1"
+                    className="text-slate-500 dark:text-slate-400 hover:text-[#D45D5D] transition-colors flex items-center gap-1 cursor-pointer font-medium"
                   >
                     <Trash2 className="w-3 h-3" />
-                    Clear Video
+                    Clear
                   </button>
                 </div>
-              </div>
+              </motion.div>
             )}
 
-            {/* Hidden File Input */}
+            {/* Hidden Video File Input */}
             <input
               ref={fileInputRef}
               type="file"
@@ -418,152 +473,197 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
               id="flight-video-file-input"
             />
 
-            {/* ============================================================ */}
-            {/* REQUIRED RECONSTRUCTION SETTINGS CONTROLS (PHASE 3) */}
-            {/* ============================================================ */}
-            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 space-y-4">
+            {/* Auxiliary Parameter Files: Calibration Matrix (.npy) & Telemetry (.csv) */}
+            <div className="pt-2 border-t border-slate-200/90 dark:border-slate-700/80 space-y-2">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                  <Sliders className="w-3.5 h-3.5 text-sf-cyan" />
-                  Reconstruction Settings
+                <span className="text-xs font-mono font-bold text-[#0B100D] dark:text-white flex items-center gap-1.5">
+                  <Binary className="w-3.5 h-3.5 text-[#37699F] dark:text-[#93B8D3]" />
+                  Spatial Calibration & Telemetry
                 </span>
-                <Badge variant="slate" isPill={false}>VGGT Params</Badge>
+                <span className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                  .npy / .csv
+                </span>
               </div>
 
-              {/* Control 1: Video Sampling FPS */}
-              <Slider
-                label="Video Sampling FPS"
-                min={0.5}
-                max={2.0}
-                step={0.1}
-                value={settings.samplingFps}
-                valueDisplay={`${settings.samplingFps.toFixed(1)} FPS`}
-                onChange={(val) => updateSetting('samplingFps', val)}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {/* 1. Calibration Matrix (.npy) Upload */}
+                <div
+                  onClick={() => calibrationInputRef.current?.click()}
+                  className={`p-2.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+                    calibrationFile
+                      ? 'bg-sky-50/80 dark:bg-[#1A2A32] border-[#37699F]/60 dark:border-[#659AC1]/60'
+                      : 'bg-slate-50/70 dark:bg-[#0D1518]/90 border-slate-300/80 dark:border-slate-700 hover:border-[#37699F] dark:hover:border-[#659AC1]'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-7 h-7 rounded-xl bg-white dark:bg-[#1C2C34] border border-slate-200 dark:border-slate-600 flex items-center justify-center text-[#37699F] dark:text-[#93B8D3] shrink-0 font-mono text-[10px] font-bold">
+                      .npy
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-mono font-bold text-slate-900 dark:text-white truncate">
+                        {calibrationFile ? calibrationFile.fileName : 'Calibration Matrix'}
+                      </p>
+                      <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                        {calibrationFile ? calibrationFile.fileSize : 'Upload .npy file'}
+                      </p>
+                    </div>
+                  </div>
+                  {calibrationFile && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setCalibrationFile(null);
+                        if (calibrationInputRef.current) calibrationInputRef.current.value = '';
+                      }}
+                      className="text-slate-400 hover:text-rose-500 p-1 cursor-pointer shrink-0"
+                      title="Remove calibration matrix"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+
+                {/* 2. Telemetry (.csv) Upload */}
+                <div
+                  onClick={() => telemetryInputRef.current?.click()}
+                  className={`p-2.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
+                    telemetryFile
+                      ? 'bg-emerald-50/80 dark:bg-[#162924] border-emerald-500/60 dark:border-[#5B8769]/60'
+                      : 'bg-slate-50/70 dark:bg-[#0D1518]/90 border-slate-300/80 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-[#5B8769]'
+                  }`}
+                >
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-7 h-7 rounded-xl bg-white dark:bg-[#1C2C34] border border-slate-200 dark:border-slate-600 flex items-center justify-center text-[#2D5A3C] dark:text-[#8EBE9D] shrink-0 font-mono text-[10px] font-bold">
+                      .csv
+                    </div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-mono font-bold text-slate-900 dark:text-white truncate">
+                        {telemetryFile ? telemetryFile.fileName : 'Flight Telemetry'}
+                      </p>
+                      <p className="text-[10px] font-mono text-slate-500 dark:text-slate-400">
+                        {telemetryFile ? telemetryFile.fileSize : 'Upload .csv file'}
+                      </p>
+                    </div>
+                  </div>
+                  {telemetryFile && (
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setTelemetryFile(null);
+                        if (telemetryInputRef.current) telemetryInputRef.current.value = '';
+                      }}
+                      className="text-slate-400 hover:text-rose-500 p-1 cursor-pointer shrink-0"
+                      title="Remove telemetry log"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Hidden File Inputs for .npy and .csv */}
+              <input
+                ref={calibrationInputRef}
+                type="file"
+                accept=".npy"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    handleCalibrationUpload(e.target.files[0]);
+                  }
+                }}
+                className="hidden"
+                id="calibration-matrix-file-input"
               />
-
-              {/* Control 2: Confidence Threshold (%) */}
-              <Slider
-                label="Confidence Threshold (%)"
-                min={2}
-                max={100}
-                step={1}
-                value={settings.confidenceThreshold}
-                valueDisplay={`${settings.confidenceThreshold}%`}
-                onChange={(val) => updateSetting('confidenceThreshold', val)}
+              <input
+                ref={telemetryInputRef}
+                type="file"
+                accept=".csv,text/csv"
+                onChange={(e) => {
+                  if (e.target.files && e.target.files[0]) {
+                    handleTelemetryUpload(e.target.files[0]);
+                  }
+                }}
+                className="hidden"
+                id="telemetry-csv-file-input"
               />
+            </div>
 
-              {/* Control 3: Max Points (K points) */}
-              <Slider
-                label="Max Points (K points)"
-                min={500}
-                max={10000}
-                step={250}
-                value={settings.maxPoints}
-                valueDisplay={`${settings.maxPoints}K`}
-                onChange={(val) => updateSetting('maxPoints', val)}
-              />
-
-              {/* Controls 4, 5, 6, 7: Switches Grid */}
-              <div className="grid grid-cols-2 gap-3 pt-1 text-xs">
-                {/* Control 4: Show Camera */}
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-sf-surface-darkMuted border border-slate-200 dark:border-slate-800">
-                  <Switch
-                    label="Show Camera"
-                    checked={settings.showCamera}
-                    onChange={(val) => updateSetting('showCamera', val)}
-                  />
-                </div>
-
-                {/* Control 5: Filter Sky */}
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-sf-surface-darkMuted border border-slate-200 dark:border-slate-800">
-                  <Switch
-                    label="Filter Sky"
-                    checked={settings.filterSky}
-                    onChange={(val) => updateSetting('filterSky', val)}
-                  />
-                </div>
-
-                {/* Control 6: Filter Black Background */}
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-sf-surface-darkMuted border border-slate-200 dark:border-slate-800">
-                  <Switch
-                    label="Filter Black BG"
-                    checked={settings.filterBlackBackground}
-                    onChange={(val) => updateSetting('filterBlackBackground', val)}
-                  />
-                </div>
-
-                {/* Control 7: Filter White Background */}
-                <div className="p-2.5 rounded-xl bg-slate-50 dark:bg-sf-surface-darkMuted border border-slate-200 dark:border-slate-800">
-                  <Switch
-                    label="Filter White BG"
-                    checked={settings.filterWhiteBackground}
-                    onChange={(val) => updateSetting('filterWhiteBackground', val)}
-                  />
-                </div>
+            {/* Restricted Usage Message */}
+            <div className="p-3 rounded-2xl bg-amber-500/10 dark:bg-amber-950/40 border border-amber-500/30 dark:border-amber-500/40 text-xs font-mono flex items-start gap-2.5">
+              <ShieldAlert className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400 mt-0.5" />
+              <div className="space-y-0.5">
+                <span className="font-bold uppercase tracking-wider text-[11px] text-amber-900 dark:text-amber-300 block">
+                  RESTRICTED USAGE
+                </span>
+                <p className="text-[11px] text-amber-900/85 dark:text-amber-200/85 leading-relaxed font-sans">
+                  Single-pass 3D reconstruction algorithms and calibrated spatial telemetry are restricted to authorized UAV survey operations and licensed geospatial research.{' '}
+                  <a
+                    href="#examples"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById('examples')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
+                    className="text-[#204C79] dark:text-[#93B8D3] font-semibold underline hover:text-slate-950 dark:hover:text-white cursor-pointer transition-colors"
+                  >
+                    Click to view sample scans
+                  </a>
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Action Button Group: RECONSTRUCT, UPDATE VISUAL, CLEAR */}
-          <div className="pt-6 border-t-2 border-slate-950/10 dark:border-slate-800 space-y-2">
+          {/* Action Button Group: RECONSTRUCT & CLEAR */}
+          <div className="pt-3 border-t border-slate-200/90 dark:border-slate-700/80 space-y-2.5">
             <Button
-              variant="tactical"
-              className="w-full"
-              size="sm"
+              variant="dark-pill"
+              className="w-full justify-center"
+              size="md"
               disabled={reconstructionState === 'empty' || reconstructionState === 'processing'}
               isLoading={reconstructionState === 'processing'}
-              iconLeft={<Play className="w-3.5 h-3.5" />}
+              iconLeft={<Play className="w-4 h-4" />}
               onClick={handleReconstruct}
             >
               {reconstructionState === 'processing'
-                ? 'Reconstructing...'
+                ? 'Reconstructing 3D Scene...'
                 : reconstructionState === 'ready'
                 ? 'Re-Run Reconstruction'
                 : 'Reconstruct'}
             </Button>
 
-            <div className="grid grid-cols-2 gap-2">
-              <Button
-                variant="secondary"
-                size="sm"
-                disabled={reconstructionState === 'empty' || reconstructionState === 'processing'}
-                onClick={handleUpdateVisual}
-                iconLeft={<RefreshCw className="w-3.5 h-3.5" />}
-              >
-                Update Visual
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={reconstructionState === 'empty' && !selectedExample}
-                onClick={handleClear}
-                iconLeft={<RotateCcw className="w-3.5 h-3.5" />}
-              >
-                Clear
-              </Button>
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              className="w-full justify-center"
+              disabled={reconstructionState === 'empty' && !selectedExample}
+              onClick={handleClear}
+              iconLeft={<RotateCcw className="w-3.5 h-3.5" />}
+            >
+              Clear
+            </Button>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Right Column: 3D Reconstruction Viewer (58% width) */}
-        <div
+        {/* Right Column: 3D Reconstruction Viewer (Matching exact height of left widget) */}
+        <motion.div
+          variants={fadeUp}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-50px' }}
           className={`${
             isMaximized
               ? 'fixed inset-0 z-[9999] w-screen h-screen bg-slate-950 flex flex-col m-0 rounded-none border-0 shadow-none'
-              : 'lg:col-span-7 rounded-2xl bg-slate-950 border-2 border-slate-950 dark:border-sf-border-darkBright shadow-tactile-light dark:shadow-tactile-cyan overflow-hidden flex flex-col relative min-h-[420px]'
+              : 'lg:col-span-7 rounded-[32px] bg-slate-950 border border-slate-300/80 dark:border-slate-700/80 shadow-aerial-lg dark:shadow-aerial-dark overflow-hidden flex flex-col justify-between relative h-full min-h-[360px]'
           }`}
         >
           {/* Viewer Window Header */}
-          <div className="flex items-center justify-between px-3 sm:px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs font-mono text-slate-300 shrink-0">
+          <div className="flex items-center justify-between px-4 sm:px-5 py-2.5 bg-slate-900/95 border-b border-slate-800 text-xs font-mono text-slate-300 shrink-0">
             <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 border border-slate-900 inline-block" />
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-500 border border-slate-900 inline-block" />
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-slate-900 inline-block" />
-              <span className="ml-1.5 font-bold text-white text-[11px] sm:text-xs">
+              <span className="w-2 h-2 rounded-full bg-[#5B8769] inline-block animate-pulse" />
+              <span className="font-bold text-white text-[11px] sm:text-xs">
                 3D RECONSTRUCTION VIEWER
               </span>
-              <span className="text-slate-500 hidden sm:inline">//</span>
-              <span className="text-sf-cyan text-[10px] sm:text-[11px] hidden sm:inline">
+              <span className="text-slate-500 hidden sm:inline">•</span>
+              <span className="text-[#93B8D3] text-[10px] sm:text-[11px] hidden sm:inline">
                 {reconstructionState === 'empty'
                   ? 'STANDBY'
                   : reconstructionState === 'uploaded'
@@ -574,12 +674,12 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-2">
               <button
                 onClick={toggleReducedMotion}
-                className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border transition-all ${
+                className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border transition-all cursor-pointer ${
                   reducedMotion
-                    ? 'bg-sf-amber text-slate-950 border-slate-900'
+                    ? 'bg-[#D99B26] text-slate-950 border-[#D99B26]'
                     : 'bg-slate-800 text-slate-300 border-slate-700 hover:text-white'
                 }`}
               >
@@ -589,18 +689,18 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
               {/* Maximize / Minimize Button */}
               <button
                 onClick={() => setIsMaximized(!isMaximized)}
-                className="px-2 py-0.5 rounded text-[10px] font-mono font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:text-sf-cyan hover:border-sf-cyan transition-all flex items-center gap-1"
+                className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:text-[#93B8D3] hover:border-[#659AC1] transition-all flex items-center gap-1 cursor-pointer"
                 title={isMaximized ? "Minimize View (Esc)" : "Maximize 3D View"}
                 aria-label={isMaximized ? "Minimize 3D View" : "Maximize 3D View"}
               >
                 {isMaximized ? (
                   <>
-                    <Minimize2 className="w-3.5 h-3.5 text-sf-cyan" />
+                    <Minimize2 className="w-3 h-3 text-[#93B8D3]" />
                     <span>MINIMIZE</span>
                   </>
                 ) : (
                   <>
-                    <Maximize2 className="w-3.5 h-3.5" />
+                    <Maximize2 className="w-3 h-3" />
                     <span>MAXIMIZE</span>
                   </>
                 )}
@@ -609,27 +709,27 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
           </div>
 
           {/* Interactive 3D Canvas Viewport */}
-          <div className="relative flex-1 min-h-[380px] bg-slate-950">
-            <SceneCanvas cameraPosition={[6, 5, 8]} fov={48} className="w-full h-full min-h-[380px]">
+          <div className="relative flex-1 w-full min-h-[260px] bg-slate-950">
+            <SceneCanvas cameraPosition={[6, 5, 8]} fov={48} className="w-full h-full min-h-[260px]">
               <Hero3DScene
                 reducedMotion={reducedMotion}
                 showTerrain={showTerrain}
                 showPointCloud={true}
-                showFrustums={settings.showCamera}
+                showFrustums={showFrustums}
                 showFlightPath={showFlightPath}
                 showDrone={showDrone}
-                pointCount={reconstructionState === 'ready' ? calculatedPointCount : 4800}
+                pointCount={2000}
               />
             </SceneCanvas>
 
             {/* OVERLAY 1: Empty Standby State */}
             {reconstructionState === 'empty' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none bg-slate-950/30">
-                <div className="p-5 rounded-2xl bg-slate-950/85 border-2 border-slate-800 max-w-sm space-y-2.5 shadow-2xl">
-                  <div className="w-10 h-10 rounded-xl bg-sf-cyan/10 border border-sf-cyan mx-auto flex items-center justify-center text-sf-cyan">
-                    <Camera className="w-5 h-5" />
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none bg-slate-950/40">
+                <div className="p-5 rounded-3xl bg-slate-950/85 border border-white/10 max-w-xs space-y-2 shadow-2xl backdrop-blur-md">
+                  <div className="w-9 h-9 rounded-full bg-[#659AC1]/15 border border-[#659AC1]/30 mx-auto flex items-center justify-center text-[#93B8D3]">
+                    <Camera className="w-4 h-4" />
                   </div>
-                  <h4 className="font-display font-bold text-sm text-white uppercase tracking-wider">
+                  <h4 className="font-display font-bold text-xs text-white tracking-wide">
                     UPLOAD A VIDEO TO BEGIN
                   </h4>
                   <a
@@ -638,9 +738,9 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                       e.preventDefault();
                       document.getElementById('examples')?.scrollIntoView({ behavior: 'smooth' });
                     }}
-                    className="text-[11px] font-mono text-sf-cyan/80 hover:text-sf-cyan leading-relaxed pointer-events-auto cursor-pointer hover:underline transition-colors"
+                    className="text-[11px] font-mono text-[#93B8D3] hover:text-white leading-relaxed pointer-events-auto cursor-pointer hover:underline transition-colors block"
                   >
-                    or click any row in the Examples table below
+                    or select a scan from Examples
                   </a>
                 </div>
               </div>
@@ -648,13 +748,12 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
             {/* OVERLAY 2: Uploaded State Banner */}
             {reconstructionState === 'uploaded' && (
-              <div className="absolute top-4 left-4 p-3 rounded-xl bg-slate-950/85 backdrop-blur-md border border-slate-800 text-xs font-mono text-slate-300 pointer-events-none space-y-1 animate-in fade-in duration-200">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-sky-400 animate-pulse" />
-                  <span className="font-bold text-white">FLIGHT DATA LOADED</span>
-                  <span className="text-sf-cyan">[READY TO RECONSTRUCT]</span>
+              <div className="absolute top-3.5 left-3.5 p-3 rounded-2xl bg-slate-950/85 border border-white/10 text-xs font-mono text-slate-300 pointer-events-none space-y-0.5 shadow-md">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#659AC1] animate-pulse" />
+                  <span className="font-bold text-white text-[11px]">FLIGHT DATA LOADED</span>
                 </div>
-                <div className="text-[11px] text-slate-400">
+                <div className="text-[10px] text-slate-400">
                   Click &apos;Reconstruct&apos; to run single-pass geometry preview.
                 </div>
               </div>
@@ -662,45 +761,45 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
             {/* OVERLAY 3: Staged Processing Demo Overlay */}
             {reconstructionState === 'processing' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 pointer-events-none bg-slate-950/70 backdrop-blur-xs">
-                <div className="p-6 rounded-2xl bg-slate-950/95 border-2 border-sf-cyan shadow-tactile-cyan max-w-md w-full space-y-4">
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 pointer-events-none bg-slate-950/80 backdrop-blur-xs">
+                <div className="p-5 rounded-3xl bg-slate-950/95 border border-[#659AC1]/40 shadow-2xl max-w-sm w-full space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <div className="w-3 h-3 rounded-full bg-sf-cyan animate-ping" />
-                      <span className="font-display font-bold text-sm text-white">
+                      <div className="w-2.5 h-2.5 rounded-full bg-[#659AC1] animate-ping" />
+                      <span className="font-display font-bold text-xs text-white">
                         Reconstructing 3D Scene...
                       </span>
                     </div>
-                    <span className="font-mono text-xs font-bold text-sf-cyan">
+                    <span className="font-mono text-xs font-bold text-[#93B8D3]">
                       {processingStatus.progressPercent}%
                     </span>
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden">
                     <div
-                      className="bg-sf-cyan h-full transition-all duration-300 ease-out"
+                      className="bg-gradient-to-r from-[#37699F] to-[#659AC1] h-full transition-all duration-300 ease-out"
                       style={{ width: `${processingStatus.progressPercent}%` }}
                     />
                   </div>
 
                   {/* Staged Step List */}
-                  <div className="space-y-2 text-xs font-mono pt-1">
+                  <div className="space-y-1 text-[11px] font-mono pt-0.5">
                     {processingStatus.steps.map((step) => (
                       <div
                         key={step.name}
-                        className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg border ${
+                        className={`flex items-center justify-between px-2.5 py-1.5 rounded-lg border transition-colors ${
                           step.status === 'completed'
-                            ? 'bg-emerald-950/30 border-emerald-500/40 text-emerald-300'
+                            ? 'bg-[#5B8769]/15 border-[#5B8769]/35 text-[#8EBE9D]'
                             : step.status === 'active'
-                            ? 'bg-sky-950/40 border-sf-cyan text-sf-cyan font-bold'
+                            ? 'bg-[#37699F]/25 border-[#659AC1] text-white font-bold'
                             : 'bg-slate-900/50 border-slate-800 text-slate-500'
                         }`}
                       >
                         <span>{step.name}</span>
                         <span>
-                          {step.status === 'completed' && <Check className="w-3.5 h-3.5 text-emerald-400" />}
-                          {step.status === 'active' && <Clock className="w-3.5 h-3.5 text-sf-cyan animate-spin" />}
+                          {step.status === 'completed' && <Check className="w-3 h-3 text-[#8EBE9D]" />}
+                          {step.status === 'active' && <Clock className="w-3 h-3 text-[#93B8D3] animate-spin" />}
                           {step.status === 'pending' && <span className="text-slate-600">○</span>}
                         </span>
                       </div>
@@ -710,55 +809,53 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
               </div>
             )}
 
-            {/* OVERLAY 4: Ready State Status Banner & Live Telemetry Readout */}
+            {/* OVERLAY 4: Ready State Status Banner & Readout */}
             {reconstructionState === 'ready' && (
-              <div className="absolute top-4 left-4 p-3 rounded-xl bg-slate-950/85 backdrop-blur-md border border-slate-800 text-xs font-mono text-slate-300 pointer-events-none space-y-1 animate-in fade-in duration-200">
-                <div className="flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="font-bold text-white">PREVIEW READY</span>
-                  <span className="text-emerald-400">[DEMO MODEL]</span>
+              <div className="absolute top-3.5 left-3.5 p-2.5 rounded-2xl bg-slate-950/85 border border-white/10 text-xs font-mono text-slate-300 pointer-events-none space-y-0.5 shadow-md">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#5B8769] animate-pulse" />
+                  <span className="font-bold text-white text-[11px]">PREVIEW READY</span>
+                  <span className="text-[#8EBE9D] text-[10px]">[3D MODEL]</span>
                 </div>
-                <div className="text-[11px] text-slate-400">
-                  DENSITY: <span className="text-sf-amber font-bold">{settings.maxPoints}K pts</span> | CONF: <span className="text-sf-cyan font-bold">{settings.confidenceThreshold}%</span>
-                </div>
-                <div className="text-[10px] text-slate-500">
-                  FRUSTUMS: {settings.showCamera ? 'VISIBLE' : 'HIDDEN'} | SKY FILTER: {settings.filterSky ? 'ON' : 'OFF'}
+                <div className="text-[10px] text-slate-400">
+                  DENSITY: <span className="text-[#D99B26] font-bold">2.48M pts</span> | ACCURACY: <span className="text-[#8EBE9D] font-bold">0.8cm</span>
                 </div>
               </div>
             )}
 
             {/* Orbit Instruction */}
-            <div className="absolute top-4 right-4 pointer-events-none px-2.5 py-1 rounded-md bg-slate-950/70 border border-slate-800 text-[10px] font-mono text-slate-400">
-              <span>🖱️ Drag to Orbit 3D Scene</span>
+            <div className="absolute top-3.5 right-3.5 pointer-events-none px-2.5 py-1 rounded-full bg-slate-950/70 border border-white/10 text-[9px] font-mono text-slate-400 flex items-center gap-1">
+              <Compass className="w-3 h-3 text-[#93B8D3]" />
+              <span>Drag to Orbit</span>
             </div>
 
-            {/* 3D Scene Toggles Bar */}
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 p-1.5 rounded-xl bg-slate-950/90 backdrop-blur-md border border-slate-800 max-w-[95%] overflow-x-auto">
+            {/* 3D Scene Toggles Bar (Bottom Center) */}
+            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1 p-1 rounded-full bg-slate-950/90 border border-white/10 max-w-[95%] overflow-x-auto shadow-xl">
               <button
                 onClick={() => setShowTerrain(!showTerrain)}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition-all ${
+                className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
                   showTerrain
-                    ? 'bg-sf-indigo text-white shadow-xs'
+                    ? 'bg-[#37699F] text-white shadow-xs'
                     : 'bg-slate-800 text-slate-400 hover:text-white'
                 }`}
               >
                 Buildings
               </button>
               <button
-                onClick={() => updateSetting('showCamera', !settings.showCamera)}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition-all ${
-                  settings.showCamera
-                    ? 'bg-sf-amber text-slate-950 shadow-xs'
+                onClick={() => setShowFrustums(!showFrustums)}
+                className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
+                  showFrustums
+                    ? 'bg-[#D99B26] text-slate-950 shadow-xs'
                     : 'bg-slate-800 text-slate-400 hover:text-white'
                 }`}
               >
-                Frustums ({settings.showCamera ? 'ON' : 'OFF'})
+                Frustums
               </button>
               <button
                 onClick={() => setShowFlightPath(!showFlightPath)}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition-all ${
+                className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
                   showFlightPath
-                    ? 'bg-emerald-500 text-slate-950 shadow-xs'
+                    ? 'bg-[#5B8769] text-white shadow-xs'
                     : 'bg-slate-800 text-slate-400 hover:text-white'
                 }`}
               >
@@ -766,9 +863,9 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
               </button>
               <button
                 onClick={() => setShowDrone(!showDrone)}
-                className={`px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold transition-all ${
+                className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
                   showDrone
-                    ? 'bg-purple-500 text-white shadow-xs'
+                    ? 'bg-[#6D6BB0] text-white shadow-xs'
                     : 'bg-slate-800 text-slate-400 hover:text-white'
                 }`}
               >
@@ -778,16 +875,16 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
           </div>
 
           {/* Quick Format Compatibility Footer */}
-          <div className="flex items-center justify-between px-4 py-2.5 bg-slate-900 border-t border-slate-800 text-xs font-mono">
-            <span className="text-slate-500">EXPORTS (GLB / LAS / PLY):</span>
-            <div className="flex items-center gap-2">
-              <span className="px-1.5 py-0.5 rounded bg-slate-800 font-bold text-slate-300">.GLB</span>
-              <span className="px-1.5 py-0.5 rounded bg-slate-800 font-bold text-slate-300">.LAS</span>
-              <span className="px-1.5 py-0.5 rounded bg-slate-800 font-bold text-slate-300">.PLY</span>
-              <span className="px-1.5 py-0.5 rounded bg-slate-800 font-bold text-slate-300">CESIUM</span>
+          <div className="flex items-center justify-between px-4 py-2 bg-slate-900/70 border-t border-slate-800 text-xs font-mono shrink-0">
+            <span className="text-[10px] text-slate-400 uppercase tracking-wider">EXPORTS (GLB / LAS / PLY):</span>
+            <div className="flex items-center gap-1.5">
+              <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[9px] font-bold text-slate-300">.GLB</span>
+              <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[9px] font-bold text-slate-300">.LAS</span>
+              <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[9px] font-bold text-slate-300">.PLY</span>
+              <span className="px-2 py-0.5 rounded-full bg-slate-800 text-[9px] font-bold text-slate-300">CESIUM</span>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

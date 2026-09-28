@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { clsx } from 'clsx';
 
@@ -19,17 +21,19 @@ export const Switch: React.FC<SwitchProps> = ({
   return (
     <label
       className={clsx(
-        'flex items-center justify-between gap-4 cursor-pointer select-none',
+        'flex items-center justify-between gap-3 cursor-pointer select-none group',
         disabled && 'opacity-50 cursor-not-allowed'
       )}
     >
       {(label || description) && (
         <div className="flex flex-col">
           {label && (
-            <span className="text-sm font-medium text-slate-900 dark:text-slate-100">{label}</span>
+            <span className="text-xs font-mono font-medium text-slate-800 dark:text-slate-200 group-hover:text-slate-950 dark:group-hover:text-white transition-colors">
+              {label}
+            </span>
           )}
           {description && (
-            <span className="text-xs text-slate-500 dark:text-slate-400">{description}</span>
+            <span className="text-[10px] text-slate-500 dark:text-slate-400">{description}</span>
           )}
         </div>
       )}
@@ -40,14 +44,16 @@ export const Switch: React.FC<SwitchProps> = ({
         disabled={disabled}
         onClick={() => !disabled && onChange(!checked)}
         className={clsx(
-          'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full border-2 border-slate-950 transition-colors focus:outline-none focus:ring-2 focus:ring-sf-cyan focus:ring-offset-2',
-          checked ? 'bg-sf-cyan' : 'bg-slate-300 dark:bg-slate-700'
+          'relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-sf-sky',
+          checked
+            ? 'bg-[#659AC1] dark:bg-[#659AC1]'
+            : 'bg-slate-200 dark:bg-sf-dark-border'
         )}
       >
         <span
           className={clsx(
-            'inline-block h-4 w-4 transform rounded-full bg-white dark:bg-slate-950 border border-slate-900 transition-transform',
-            checked ? 'translate-x-6' : 'translate-x-1'
+            'inline-block h-3.5 w-3.5 transform rounded-full bg-white shadow-xs transition-transform duration-200',
+            checked ? 'translate-x-4.5' : 'translate-x-0.5'
           )}
         />
       </button>

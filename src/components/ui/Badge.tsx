@@ -3,7 +3,7 @@ import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
-  variant?: 'cyan' | 'indigo' | 'amber' | 'emerald' | 'rose' | 'slate';
+  variant?: 'cyan' | 'indigo' | 'amber' | 'emerald' | 'rose' | 'slate' | 'forest';
   hasDot?: boolean;
   isPill?: boolean;
 }
@@ -16,35 +16,37 @@ export const Badge: React.FC<BadgeProps> = ({
   isPill = true,
   ...props
 }) => {
-  const baseStyles = 'inline-flex items-center gap-1.5 font-mono text-xs font-semibold px-2.5 py-1 select-none border uppercase tracking-wider';
+  const baseStyles = 'inline-flex items-center gap-1.5 font-mono text-[11px] font-semibold px-3 py-1 select-none border tracking-wide';
 
   const variantStyles = {
-    cyan: 'bg-sky-100 text-sky-900 border-sky-600 dark:bg-sky-950/60 dark:text-sky-300 dark:border-sky-500/40',
-    indigo: 'bg-indigo-100 text-indigo-900 border-indigo-600 dark:bg-indigo-950/60 dark:text-indigo-300 dark:border-indigo-500/40',
-    amber: 'bg-amber-100 text-amber-900 border-amber-600 dark:bg-amber-950/60 dark:text-amber-300 dark:border-amber-500/40',
-    emerald: 'bg-emerald-100 text-emerald-900 border-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-500/40',
-    rose: 'bg-rose-100 text-rose-900 border-rose-600 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-500/40',
-    slate: 'bg-slate-100 text-slate-900 border-slate-600 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-600',
+    cyan: 'bg-[#659AC1]/15 text-[#1A456E] border-[#659AC1]/40 dark:bg-[#659AC1]/20 dark:text-[#93B8D3] dark:border-[#659AC1]/40',
+    indigo: 'bg-[#37699F]/15 text-[#143252] border-[#37699F]/40 dark:bg-[#37699F]/30 dark:text-[#B4D7F2] dark:border-[#659AC1]/50',
+    amber: 'bg-[#D99B26]/15 text-[#734B03] border-[#D99B26]/40 dark:bg-[#D99B26]/20 dark:text-[#FDE08B] dark:border-[#D99B26]/45',
+    emerald: 'bg-[#5B8769]/15 text-[#1E432A] border-[#5B8769]/40 dark:bg-[#5B8769]/25 dark:text-[#A7D8B5] dark:border-[#5B8769]/45',
+    forest: 'bg-[#31514F]/15 text-[#163533] border-[#31514F]/40 dark:bg-[#31514F]/35 dark:text-[#93B8D3] dark:border-[#5B8769]/45',
+    rose: 'bg-[#D45D5D]/15 text-[#7A1C1C] border-[#D45D5D]/40 dark:bg-[#D45D5D]/20 dark:text-[#FCA5A5] dark:border-[#D45D5D]/45',
+    slate: 'bg-slate-200/80 text-slate-800 border-slate-300 dark:bg-[#1C2C34] dark:text-[#CBD5E1] dark:border-slate-600',
   };
 
   const dotColors = {
-    cyan: 'bg-sky-500 shadow-[0_0_8px_#38bdf8]',
-    indigo: 'bg-indigo-500 shadow-[0_0_8px_#6366f1]',
-    amber: 'bg-amber-500 shadow-[0_0_8px_#f59e0b]',
-    emerald: 'bg-emerald-500 shadow-[0_0_8px_#10b981]',
-    rose: 'bg-rose-500 shadow-[0_0_8px_#f43f5e]',
-    slate: 'bg-slate-500',
+    cyan: 'bg-[#37699F] dark:bg-[#659AC1]',
+    indigo: 'bg-[#294F77] dark:bg-[#37699F]',
+    amber: 'bg-[#D99B26] dark:bg-[#D99B26]',
+    emerald: 'bg-[#3E6A4C] dark:bg-[#5B8769]',
+    forest: 'bg-[#31514F] dark:bg-[#5B8769]',
+    rose: 'bg-[#D45D5D] dark:bg-[#D45D5D]',
+    slate: 'bg-slate-700 dark:bg-[#659AC1]',
   };
 
   return (
     <span
       className={twMerge(
-        clsx(baseStyles, isPill ? 'rounded-full' : 'rounded-md', variantStyles[variant], className)
+        clsx(baseStyles, isPill ? 'rounded-full' : 'rounded-lg', variantStyles[variant], className)
       )}
       {...props}
     >
       {hasDot && (
-        <span className={clsx('w-2 h-2 rounded-full animate-pulse', dotColors[variant])} />
+        <span className={clsx('w-1.5 h-1.5 rounded-full animate-pulse', dotColors[variant])} />
       )}
       <span>{children}</span>
     </span>

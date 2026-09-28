@@ -21,9 +21,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'SkyFusion — Autonomous UAV Swarms & Real-Time 3D Scene Reconstruction',
+  title: 'SkyFusion — Single-Pass UAV 3D Reconstruction Platform',
   description:
-    'Turn multi-angle 4K drone video and images into dense 3D point clouds, neural meshes, and sub-centimeter digital twins with real-time telemetry streaming.',
+    'Turn a single UAV flight into an interactive spatial 3D reconstruction with dense neural point clouds, pose estimation, and real-time telemetry streaming.',
   icons: {
     icon: '/favicon.ico',
   },
@@ -40,7 +40,7 @@ export default function RootLayout({
       className={`dark ${spaceGrotesk.variable} ${inter.variable} ${jetbrainsMono.variable}`}
       suppressHydrationWarning
     >
-      <body className="min-h-screen bg-sf-bg-light dark:bg-sf-bg-dark text-slate-900 dark:text-slate-100 antialiased selection:bg-sf-cyan selection:text-slate-950">
+      <body className="min-h-screen bg-sf-canvas-light dark:bg-sf-canvas-dark text-slate-900 dark:text-[#F1F8F9] antialiased selection:bg-sf-sky-soft selection:text-sf-dark-primary font-sans transition-colors duration-300">
         {children}
       </body>
     </html>
