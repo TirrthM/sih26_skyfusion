@@ -1,11 +1,13 @@
 /** @type {import('next').NextConfig} */
-const isProd = process.env.NODE_ENV === 'production';
+const isGithubPages = process.env.GITHUB_ACTIONS === 'true';
 
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: ['three', '@react-three/fiber', '@react-three/drei'],
-  output: 'export',
-  basePath: isProd ? '/sih26_skyfusion' : '',
+  ...(isGithubPages && {
+    output: 'export',
+    basePath: '/sih26_skyfusion',
+  }),
   images: {
     unoptimized: true,
   },
@@ -20,3 +22,4 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
