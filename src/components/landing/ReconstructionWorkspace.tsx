@@ -78,7 +78,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
   const [videoMetadata, setVideoMetadata] = useState<VideoInputMetadata | null>(null);
   const [calibrationFile, setCalibrationFile] = useState<{ fileName: string; fileSize: string } | null>(null);
   const [telemetryFile, setTelemetryFile] = useState<{ fileName: string; fileSize: string } | null>(null);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<React.ReactNode | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [visualUpdateNotice, setVisualUpdateNotice] = useState<string | null>(null);
 
@@ -142,21 +142,35 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
     };
   }, [videoMetadata]);
 
-  // File Upload Handlers
+  // File Upload Handlers (Restricted)
+  const handleRestrictedUpload = () => {
+    setErrorMessage(
+      <span className="flex items-center flex-wrap gap-1">
+        Custom uploads are currently restricted to authorized users. 
+        <a
+          href="#examples"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById('examples')?.scrollIntoView({ behavior: 'smooth' });
+          }}
+          className="underline font-bold text-rose-900 dark:text-rose-200 hover:text-rose-700 dark:hover:text-white transition-colors cursor-pointer ml-1"
+        >
+          Click to view sample scans
+        </a>
+      </span>
+    );
+    // Auto-clear message after 8 seconds
+    setTimeout(() => setErrorMessage(null), 8000);
+  };
+
   const handleFile = async (file: File) => {
-    setErrorMessage(null);
-    try {
-      const metadata = await ReconstructionService.processVideoUpload(file);
-      setVideoMetadata(metadata);
-      setReconstructionState('uploaded');
-    } catch (err: any) {
-      setErrorMessage(err.message || 'Unable to load video. Please select a supported MP4, MOV, AVI, or WebM file.');
-    }
+    handleRestrictedUpload();
   };
 
   const onFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      handleFile(e.target.files[0]);
+      handleRestrictedUpload();
+      e.target.value = ''; // Reset input
     }
   };
 
@@ -174,37 +188,16 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
     e.preventDefault();
     setIsDragging(false);
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
-      if (file.name.toLowerCase().endsWith('.npy')) {
-        handleCalibrationUpload(file);
-      } else if (file.name.toLowerCase().endsWith('.csv')) {
-        handleTelemetryUpload(file);
-      } else {
-        handleFile(file);
-      }
+      handleRestrictedUpload();
     }
   };
 
   const handleCalibrationUpload = (file: File) => {
-    if (!file.name.toLowerCase().endsWith('.npy')) {
-      setErrorMessage('Invalid calibration file. Please upload a .npy matrix file.');
-      return;
-    }
-    const sizeKB = (file.size / 1024).toFixed(1) + ' KB';
-    setCalibrationFile({ fileName: file.name, fileSize: sizeKB });
-    setVisualUpdateNotice(`Loaded calibration matrix: ${file.name}`);
-    setTimeout(() => setVisualUpdateNotice(null), 2500);
+    handleRestrictedUpload();
   };
 
   const handleTelemetryUpload = (file: File) => {
-    if (!file.name.toLowerCase().endsWith('.csv')) {
-      setErrorMessage('Invalid telemetry file. Please upload a .csv telemetry log.');
-      return;
-    }
-    const sizeKB = (file.size / 1024).toFixed(1) + ' KB';
-    setTelemetryFile({ fileName: file.name, fileSize: sizeKB });
-    setVisualUpdateNotice(`Loaded telemetry log: ${file.name}`);
-    setTimeout(() => setVisualUpdateNotice(null), 2500);
+    handleRestrictedUpload();
   };
 
   // Trigger Reconstruct
@@ -361,7 +354,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                 onDragOver={onDragOver}
                 onDragLeave={onDragLeave}
                 onDrop={onDrop}
-                onClick={() => fileInputRef.current?.click()}
+                onClick={handleRestrictedUpload}
                 className={`border-2 border-dashed rounded-3xl p-6 sm:p-8 text-center space-y-3 transition-all cursor-pointer select-none ${
                   isDragging
                     ? 'border-[#37699F] dark:border-[#659AC1] bg-sky-50 dark:bg-[#1A2A32] scale-[1.01]'
@@ -435,7 +428,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                 {/* Quick Actions */}
                 <div className="flex items-center justify-between text-xs font-mono pt-0.5">
                   <button
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={handleRestrictedUpload}
                     className="text-[#204C79] dark:text-[#93B8D3] hover:underline font-bold flex items-center gap-1 cursor-pointer"
                   >
                     <RefreshCw className="w-3 h-3" />
@@ -477,7 +470,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {/* 1. Calibration Matrix (.npy) Upload */}
                 <div
-                  onClick={() => calibrationInputRef.current?.click()}
+                  onClick={handleRestrictedUpload}
                   className={`p-2.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                     calibrationFile
                       ? 'bg-sky-50/80 dark:bg-[#1A2A32] border-[#37699F]/60 dark:border-[#659AC1]/60'
@@ -514,7 +507,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
                 {/* 2. Telemetry (.csv) Upload */}
                 <div
-                  onClick={() => telemetryInputRef.current?.click()}
+                  onClick={handleRestrictedUpload}
                   className={`p-2.5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between ${
                     telemetryFile
                       ? 'bg-emerald-50/80 dark:bg-[#162924] border-emerald-500/60 dark:border-[#5B8769]/60'
