@@ -18,7 +18,7 @@ export const LandingFooter: React.FC = () => {
         <div className="flex items-center justify-center">
           <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-slate-100 dark:bg-[#1A2A32] border border-slate-300/80 dark:border-slate-700 font-semibold text-xs font-mono text-slate-800 dark:text-slate-200 shadow-xs whitespace-nowrap">
             <span className="w-1.5 h-1.5 rounded-full bg-[#37699F] dark:bg-[#659AC1]" />
-            This PS is developed by team Last_Dance
+            This project has been developed by team Last_Dance for SIH 2026
           </span>
         </div>
 
