@@ -90,7 +90,7 @@ export const RECONSTRUCTION_EXAMPLES: ReconstructionExample[] = [
     id: 'ex-03-bridge',
     name: 'Outdoor video 2',
     category: 'Civil Engineering',
-    videoFileName: 'outdoor2_video.mov',
+    videoFileName: 'outdoor2_video.mp4',
     plyModelUrl: '/models/outdoor2_model_centered.ply',
     fileSize: '10.7 MB',
     duration: '00:14',

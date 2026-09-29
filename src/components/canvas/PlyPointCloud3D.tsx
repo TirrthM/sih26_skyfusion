@@ -67,11 +67,3 @@ export const PlyPointCloud3D: React.FC<PlyPointCloud3DProps> = ({
     </points>
   );
 };
-
-// Preload the 3 main photogrammetry models in the background immediately 
-// when this component's bundle is executed by the browser.
-if (typeof window !== 'undefined') {
-  useLoader.preload(PLYLoader, '/models/urban_pointcloud_origin_centered.ply');
-  useLoader.preload(PLYLoader, '/models/outdoor1_model_centered.ply');
-  useLoader.preload(PLYLoader, '/models/outdoor2_model_centered.ply');
-}
