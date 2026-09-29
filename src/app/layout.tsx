@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   description:
     'Turn a single UAV flight into an interactive spatial 3D reconstruction with dense neural point clouds, pose estimation, and real-time telemetry streaming.',
   icons: {
-    icon: '/favicon.ico',
+    icon: '/logo.png',
   },
 };
 

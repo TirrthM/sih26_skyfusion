@@ -640,8 +640,8 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
           viewport={{ once: true, margin: '-50px' }}
           className={`${
             isMaximized
-              ? 'fixed inset-0 z-[9999] w-screen h-screen bg-sf-canvas-light dark:bg-slate-950 flex flex-col m-0 rounded-none border-0 shadow-none'
-              : 'lg:col-span-7 rounded-[32px] bg-slate-100 dark:bg-slate-950 border border-slate-300/80 dark:border-slate-700/80 shadow-aerial-lg dark:shadow-aerial-dark overflow-hidden flex flex-col justify-between relative h-full min-h-[360px]'
+              ? 'fixed inset-0 z-[9999] w-screen h-screen bg-slate-950 flex flex-col m-0 rounded-none border-0 shadow-none'
+              : 'lg:col-span-7 rounded-[32px] bg-slate-950 border border-slate-300/80 dark:border-slate-700/80 shadow-aerial-lg dark:shadow-aerial-dark overflow-hidden flex flex-col justify-between relative h-full min-h-[360px]'
           }`}
         >
           {/* Viewer Window Header */}
@@ -727,7 +727,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
             {/* OVERLAY 1: Empty Standby State */}
             {reconstructionState === 'empty' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none bg-slate-100/40 dark:bg-slate-950/40">
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none bg-slate-950/40">
                 <div className="p-5 rounded-3xl bg-slate-950/85 border border-white/10 max-w-xs space-y-2 shadow-2xl backdrop-blur-md">
                   <div className="w-9 h-9 rounded-full bg-[#659AC1]/15 border border-[#659AC1]/30 mx-auto flex items-center justify-center text-[#93B8D3]">
                     <Camera className="w-4 h-4" />
@@ -764,7 +764,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
             {/* OVERLAY 3: Staged Processing Demo Overlay */}
             {reconstructionState === 'processing' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 pointer-events-none bg-slate-100/80 dark:bg-slate-950/80 backdrop-blur-xs">
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 pointer-events-none bg-slate-950/80 backdrop-blur-xs">
                 <div className="p-5 rounded-3xl bg-white/95 dark:bg-slate-950/95 border border-[#659AC1]/40 shadow-2xl max-w-sm w-full space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">

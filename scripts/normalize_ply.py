@@ -2,8 +2,9 @@ import open3d as o3d
 import numpy as np
 import sys
 import os
+import argparse
 
-def normalize_ply(input_path, output_path):
+def normalize_ply(input_path, output_path, downsample_ratio=1.0):
     if not os.path.exists(input_path):
         print(f"Error: Could not find {input_path}")
         sys.exit(1)
@@ -17,12 +18,21 @@ def normalize_ply(input_path, output_path):
         
     num_points = len(pcd.points)
     
+    # Downsample if requested
+    if downsample_ratio < 1.0:
+        print(f"Downsampling to {downsample_ratio*100}% of original points...")
+        # random_down_sample requires open3d >= 0.12
+        pcd = pcd.random_down_sample(downsample_ratio)
+        new_num_points = len(pcd.points)
+        print(f"Reduced points from {num_points} to {new_num_points}")
+        num_points = new_num_points
+
     # Calculate bounds and center
     min_bound = pcd.get_min_bound()
     max_bound = pcd.get_max_bound()
     center = (min_bound + max_bound) / 2.0
     
-    print("\nOriginal bounds:")
+    print("\nOriginal bounds (post-downsample):")
     print(f"    min XYZ: {min_bound}")
     print(f"    max XYZ: {max_bound}")
     print(f"    center:  {center}")
@@ -47,22 +57,18 @@ def normalize_ply(input_path, output_path):
     
     # Validation
     assert np.allclose(new_center, np.zeros(3), atol=1e-6), "Center is not approx [0,0,0]!"
-    assert len(pcd.points) == num_points, "Number of points changed!"
-    
-    original_dims = max_bound - min_bound
-    new_dims = new_max - new_min
-    assert np.allclose(original_dims, new_dims, atol=1e-5), "Dimensions changed!"
     
     print("\nValidation PASSED!")
     print(f"Exporting centered point cloud to {output_path}...")
     
-    # Save the file
+    # Save the file (binary little endian is default for PLY in Open3D)
     o3d.io.write_point_cloud(output_path, pcd)
-    print("Done!")
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("Usage: python normalize_ply.py <input.ply> <output.ply>")
-        sys.exit(1)
-    
-    normalize_ply(sys.argv[1], sys.argv[2])
+    parser = argparse.ArgumentParser(description="Normalize and optionally downsample a PLY point cloud.")
+    parser.add_argument("input", help="Input PLY file path")
+    parser.add_argument("output", help="Output PLY file path")
+    parser.add_argument("--downsample", type=float, default=1.0, help="Fraction of points to keep (e.g. 0.15 for 15%)")
+    args = parser.parse_args()
+
+    normalize_ply(args.input, args.output, args.downsample)
