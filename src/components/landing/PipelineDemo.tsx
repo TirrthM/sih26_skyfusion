@@ -265,7 +265,7 @@ export const PipelineDemo: React.FC = () => {
           </div>
 
           <div className="flex-1 relative min-h-[380px]">
-            <SceneCanvas cameraPosition={[6, 5, 8]} fov={48} className="w-full h-full min-h-[380px]">
+            <SceneCanvas cameraPosition={[14, 10, 16]} fov={45} className="w-full h-full min-h-[380px]">
               <PipelineStage3DScene stageIndex={selectedLayerId} />
             </SceneCanvas>
 

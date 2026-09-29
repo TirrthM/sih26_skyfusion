@@ -10,6 +10,7 @@ import { FlightPath3D } from './FlightPath3D';
 import { DroneModel3D } from './DroneModel3D';
 import { PlyPointCloud3D } from './PlyPointCloud3D';
 import { CameraResetController } from './CameraResetController';
+import { DroneLoader3D } from './DroneLoader3D';
 
 export interface Hero3DSceneProps {
   plyModelUrl?: string;
@@ -64,7 +65,7 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({
       
       {showPointCloud && (
         plyModelUrl ? (
-          <React.Suspense fallback={<PointCloud3D count={800} reducedMotion={reducedMotion} />}>
+          <React.Suspense fallback={<DroneLoader3D />}>
             <PlyPointCloud3D 
               url={plyModelUrl} 
               pointSize={0.03} 

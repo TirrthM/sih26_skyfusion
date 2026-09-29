@@ -28,26 +28,29 @@ export const PlyPointCloud3D: React.FC<PlyPointCloud3DProps> = ({
     const box = geo.boundingBox;
     
     if (box) {
-      // Find the maximum dimension of the bounding box
       const size = new THREE.Vector3();
       box.getSize(size);
       const maxDim = Math.max(size.x, size.y, size.z);
       
-      // Target size for the model to look "big and proper"
       const targetSize = scaleOverride || 12;
       const scale = targetSize / maxDim;
-      
-      // Apply scale
       geo.scale(scale, scale, scale);
     }
     
-    // Center it exactly at origin
     geo.center();
-    // Recompute normals for better lighting if there are any faces (less relevant for pure points, but good practice)
     geo.computeVertexNormals();
     
     return geo;
-  }, [geometry]);
+  }, [geometry, scaleOverride]);
+
+  React.useEffect(() => {
+    // Wait a couple frames for the new massive geometry to be added to the scene,
+    // then trigger the CameraResetController to frame it perfectly.
+    const timer = setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('reset-camera'));
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [centeredGeometry]);
 
   const hasColors = !!centeredGeometry.attributes.color;
 

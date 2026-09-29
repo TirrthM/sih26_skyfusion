@@ -710,7 +710,7 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
           {/* Interactive 3D Canvas Viewport */}
           <div className="relative flex-1 w-full min-h-[260px] bg-transparent">
-            <SceneCanvas cameraPosition={[6, 5, 8]} fov={48} className="w-full h-full min-h-[260px]">
+            <SceneCanvas cameraPosition={[14, 10, 16]} fov={45} className="w-full h-full min-h-[260px]">
               <Hero3DScene
                 plyModelUrl={selectedExample?.plyModelUrl}
                 reducedMotion={reducedMotion}
@@ -832,49 +832,51 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
               <span>Drag to Orbit</span>
             </div>
 
-            {/* 3D Scene Toggles Bar (Bottom Center) */}
-            <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1 p-1 rounded-full bg-slate-950/90 border border-white/10 max-w-[95%] overflow-x-auto shadow-xl">
-              <button
-                onClick={() => setShowTerrain(!showTerrain)}
-                className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
-                  showTerrain
-                    ? 'bg-[#37699F] text-white shadow-xs'
-                    : 'bg-slate-800 text-slate-400 hover:text-white'
-                }`}
-              >
-                Buildings
-              </button>
-              <button
-                onClick={() => setShowFrustums(!showFrustums)}
-                className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
-                  showFrustums
-                    ? 'bg-[#D99B26] text-slate-950 shadow-xs'
-                    : 'bg-slate-800 text-slate-400 hover:text-white'
-                }`}
-              >
-                Frustums
-              </button>
-              <button
-                onClick={() => setShowFlightPath(!showFlightPath)}
-                className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
-                  showFlightPath
-                    ? 'bg-[#5B8769] text-white shadow-xs'
-                    : 'bg-slate-800 text-slate-400 hover:text-white'
-                }`}
-              >
-                Flight Path
-              </button>
-              <button
-                onClick={() => setShowDrone(!showDrone)}
-                className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
-                  showDrone
-                    ? 'bg-[#6D6BB0] text-white shadow-xs'
-                    : 'bg-slate-800 text-slate-400 hover:text-white'
-                }`}
-              >
-                Drone
-              </button>
-            </div>
+            {/* 3D Scene Toggles Bar (Bottom Center) - Only show for placeholder */}
+            {!selectedExample?.plyModelUrl && (
+              <div className="absolute bottom-2.5 left-1/2 -translate-x-1/2 flex items-center gap-1 p-1 rounded-full bg-slate-950/90 border border-white/10 max-w-[95%] overflow-x-auto shadow-xl">
+                <button
+                  onClick={() => setShowTerrain(!showTerrain)}
+                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
+                    showTerrain
+                      ? 'bg-[#37699F] text-white shadow-xs'
+                      : 'bg-slate-800 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Buildings
+                </button>
+                <button
+                  onClick={() => setShowFrustums(!showFrustums)}
+                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
+                    showFrustums
+                      ? 'bg-[#D99B26] text-slate-950 shadow-xs'
+                      : 'bg-slate-800 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Frustums
+                </button>
+                <button
+                  onClick={() => setShowFlightPath(!showFlightPath)}
+                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
+                    showFlightPath
+                      ? 'bg-[#5B8769] text-white shadow-xs'
+                      : 'bg-slate-800 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Flight Path
+                </button>
+                <button
+                  onClick={() => setShowDrone(!showDrone)}
+                  className={`px-2.5 py-0.5 rounded-full text-[10px] font-mono font-semibold transition-all cursor-pointer ${
+                    showDrone
+                      ? 'bg-[#6D6BB0] text-white shadow-xs'
+                      : 'bg-slate-800 text-slate-400 hover:text-white'
+                  }`}
+                >
+                  Drone
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Quick Format Compatibility Footer */}
