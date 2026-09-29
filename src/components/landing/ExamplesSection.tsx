@@ -91,12 +91,22 @@ export const ExamplesSection: React.FC<ExamplesSectionProps> = ({
                     {/* Column 1: Video Name & Thumbnail Indicator */}
                     <td className="py-3.5 px-5">
                       <div className="flex items-center gap-3">
-                        <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center text-slate-950 font-bold border border-black/10 shrink-0 shadow-xs"
-                          style={{ backgroundColor: ex.thumbnailColor }}
-                        >
-                          <Film className="w-3.5 h-3.5" />
-                        </div>
+                        {ex.thumbnailUrl ? (
+                          <div className="w-8 h-8 rounded-full overflow-hidden shrink-0 shadow-xs border border-slate-300 dark:border-slate-700">
+                            <img 
+                              src={ex.thumbnailUrl} 
+                              alt={`${ex.name} thumbnail`} 
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <div
+                            className="w-8 h-8 rounded-full flex items-center justify-center text-slate-950 font-bold border border-black/10 shrink-0 shadow-xs"
+                            style={{ backgroundColor: ex.thumbnailColor }}
+                          >
+                            <Film className="w-3.5 h-3.5" />
+                          </div>
+                        )}
                         <div>
                           <div className="font-display font-bold text-sm text-slate-950 dark:text-white group-hover:text-[#1A456E] dark:group-hover:text-[#93B8D3] transition-colors">
                             {ex.name}

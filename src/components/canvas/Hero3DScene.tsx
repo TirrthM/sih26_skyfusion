@@ -8,8 +8,11 @@ import { PointCloud3D } from './PointCloud3D';
 import { CameraFrustum3D } from './CameraFrustum3D';
 import { FlightPath3D } from './FlightPath3D';
 import { DroneModel3D } from './DroneModel3D';
+import { PlyPointCloud3D } from './PlyPointCloud3D';
+import { CameraResetController } from './CameraResetController';
 
 export interface Hero3DSceneProps {
+  plyModelUrl?: string;
   reducedMotion?: boolean;
   showTerrain?: boolean;
   showPointCloud?: boolean;
@@ -17,9 +20,12 @@ export interface Hero3DSceneProps {
   showFlightPath?: boolean;
   showDrone?: boolean;
   pointCount?: number;
+  modelRotation?: [number, number, number];
+  modelScale?: number;
 }
 
 export const Hero3DScene: React.FC<Hero3DSceneProps> = ({
+  plyModelUrl,
   reducedMotion = false,
   showTerrain = true,
   showPointCloud = true,
@@ -27,6 +33,8 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({
   showFlightPath = true,
   showDrone = true,
   pointCount = 1800,
+  modelRotation,
+  modelScale,
 }) => {
   return (
     <>
@@ -37,22 +45,41 @@ export const Hero3DScene: React.FC<Hero3DSceneProps> = ({
 
       {/* Orbit Controls with bounded damping */}
       <OrbitControls
+        makeDefault
         enableDamping
         dampingFactor={0.08}
-        maxPolarAngle={Math.PI / 2 - 0.05} // Keep camera above terrain
-        minDistance={4}
-        maxDistance={24}
+        maxPolarAngle={plyModelUrl ? Math.PI : Math.PI / 2 - 0.05} // Allow full 360 rotation for uploaded models
+        minDistance={1}
+        maxDistance={50}
         autoRotate={!reducedMotion}
         autoRotateSpeed={0.4}
       />
+      
+      {/* Camera Reset Controller */}
+      <CameraResetController />
 
       {/* 3D Scene Layers */}
-      <SpatialGrid3D />
-      {showTerrain && <Terrain3D />}
-      {showPointCloud && <PointCloud3D count={pointCount} reducedMotion={reducedMotion} />}
-      {showFrustums && <CameraFrustum3D />}
-      {showFlightPath && <FlightPath3D reducedMotion={reducedMotion} />}
-      {showDrone && <DroneModel3D reducedMotion={reducedMotion} />}
+      {!plyModelUrl && <SpatialGrid3D />}
+      {showTerrain && !plyModelUrl && <Terrain3D />}
+      
+      {showPointCloud && (
+        plyModelUrl ? (
+          <React.Suspense fallback={<PointCloud3D count={800} reducedMotion={reducedMotion} />}>
+            <PlyPointCloud3D 
+              url={plyModelUrl} 
+              pointSize={0.03} 
+              rotation={modelRotation}
+              scale={modelScale}
+            />
+          </React.Suspense>
+        ) : (
+          <PointCloud3D count={pointCount} reducedMotion={reducedMotion} />
+        )
+      )}
+      
+      {!plyModelUrl && showFrustums && <CameraFrustum3D />}
+      {!plyModelUrl && showFlightPath && <FlightPath3D reducedMotion={reducedMotion} />}
+      {!plyModelUrl && showDrone && <DroneModel3D reducedMotion={reducedMotion} />}
     </>
   );
 };

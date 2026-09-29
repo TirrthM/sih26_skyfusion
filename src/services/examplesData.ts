@@ -17,6 +17,7 @@ export interface ReconstructionExample {
   duration: string;
   resolution: string;
   thumbnailColor: string;
+  thumbnailUrl?: string;
   samplingFps: number;
   confidenceThreshold: number;
   maxPoints: number;
@@ -25,6 +26,9 @@ export interface ReconstructionExample {
   showCamera: boolean;
   filterSky: boolean;
   description: string;
+  plyModelUrl?: string;
+  modelRotation?: [number, number, number];
+  modelScale?: number;
 }
 
 export const DEFAULT_RECONSTRUCTION_SETTINGS: ReconstructionSettings = {
@@ -40,13 +44,15 @@ export const DEFAULT_RECONSTRUCTION_SETTINGS: ReconstructionSettings = {
 export const RECONSTRUCTION_EXAMPLES: ReconstructionExample[] = [
   {
     id: 'ex-01-urban',
-    name: 'Urban Building Orbit',
+    name: 'Indoor video',
     category: 'Architecture',
-    videoFileName: 'urban_facade_orbit_4k.mp4',
-    fileSize: '38.4 MB',
-    duration: '01:18',
-    resolution: '3840 × 2160',
+    videoFileName: 'firstvideo.mp4',
+    plyModelUrl: '/models/urban_pointcloud_origin_centered.ply',
+    fileSize: '14.3 MB',
+    duration: '00:57',
+    resolution: '1920 × 1080',
     thumbnailColor: '#38BDF8',
+    thumbnailUrl: '/videos/firstvideo_thumbnail.jpg',
     samplingFps: 1.0,
     confidenceThreshold: 65,
     maxPoints: 1200,
@@ -55,16 +61,20 @@ export const RECONSTRUCTION_EXAMPLES: ReconstructionExample[] = [
     showCamera: true,
     filterSky: true,
     description: '360° multi-tier drone orbit around a high-rise office complex with structural edge tracking.',
+    modelRotation: [-Math.PI / 2, 0, 0],
+    modelScale: 12,
   },
   {
     id: 'ex-02-refinery',
-    name: 'Industrial Refinery Asset',
+    name: 'Outdoor video 1',
     category: 'Infrastructure',
-    videoFileName: 'refinery_tower_survey.mp4',
-    fileSize: '52.1 MB',
-    duration: '02:04',
+    videoFileName: 'outdoor1_video.mp4',
+    plyModelUrl: '/models/outdoor1_model_centered.ply',
+    fileSize: '5.7 MB',
+    duration: '00:22',
     resolution: '1920 × 1080',
     thumbnailColor: '#F59E0B',
+    thumbnailUrl: '/videos/outdoor1_thumbnail.jpg',
     samplingFps: 1.5,
     confidenceThreshold: 45,
     maxPoints: 2400,
@@ -73,16 +83,20 @@ export const RECONSTRUCTION_EXAMPLES: ReconstructionExample[] = [
     showCamera: true,
     filterSky: false,
     description: 'Dense pipework and distillation column reconstruction with high-contrast background filtering.',
+    modelRotation: [Math.PI, 0, 0],
+    modelScale: 18,
   },
   {
     id: 'ex-03-bridge',
-    name: 'Suspension Bridge Span',
+    name: 'Outdoor video 2',
     category: 'Civil Engineering',
-    videoFileName: 'bridge_cable_corridor.mov',
-    fileSize: '44.8 MB',
-    duration: '01:45',
-    resolution: '3840 × 2160',
+    videoFileName: 'outdoor2_video.mov',
+    plyModelUrl: '/models/outdoor2_model_centered.ply',
+    fileSize: '10.7 MB',
+    duration: '00:14',
+    resolution: '1920 × 1080',
     thumbnailColor: '#10B981',
+    thumbnailUrl: '/videos/outdoor2_thumbnail.jpg',
     samplingFps: 0.8,
     confidenceThreshold: 75,
     maxPoints: 3000,
@@ -91,41 +105,7 @@ export const RECONSTRUCTION_EXAMPLES: ReconstructionExample[] = [
     showCamera: true,
     filterSky: true,
     description: 'Linear corridor aerial scan of main suspension cables and bridge roadway deck.',
-  },
-  {
-    id: 'ex-04-telecom',
-    name: 'Telecom Mast Tower',
-    category: 'Telecom',
-    videoFileName: 'telecom_lattice_mast.mp4',
-    fileSize: '29.3 MB',
-    duration: '00:54',
-    resolution: '1920 × 1080',
-    thumbnailColor: '#6366F1',
-    samplingFps: 2.0,
-    confidenceThreshold: 80,
-    maxPoints: 1500,
-    filterBlackBackground: true,
-    filterWhiteBackground: false,
-    showCamera: false,
-    filterSky: true,
-    description: 'Vertical spiral inspection of antenna arrays with dense thin-structure recovery.',
-  },
-  {
-    id: 'ex-05-coastal',
-    name: 'Coastal Cliff Topography',
-    category: 'Terrain / GIS',
-    videoFileName: 'coastal_ridge_survey.mp4',
-    fileSize: '68.0 MB',
-    duration: '02:30',
-    resolution: '3840 × 2160',
-    thumbnailColor: '#A855F7',
-    samplingFps: 1.2,
-    confidenceThreshold: 55,
-    maxPoints: 4500,
-    filterBlackBackground: false,
-    filterWhiteBackground: false,
-    showCamera: true,
-    filterSky: false,
-    description: 'Large-scale oblique shoreline topography flight with undulating terrain elevation.',
+    modelRotation: [Math.PI - Math.PI / 7, 0, 0],
+    modelScale: 28,
   },
 ];

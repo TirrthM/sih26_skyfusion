@@ -22,10 +22,12 @@ import {
   ShieldAlert,
   Binary,
   FileSpreadsheet,
+  Home,
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '../ui/Button';
 import { Badge } from '../ui/Badge';
+import { CustomVideoPlayer } from '../ui/CustomVideoPlayer';
 import { SceneCanvas } from '../canvas/SceneCanvas';
 import { Hero3DScene } from '../canvas/Hero3DScene';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -397,24 +399,11 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                 className="space-y-3"
               >
                 {/* Video Preview Player */}
-                <div className="rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-black relative shadow-xs">
-                  {videoMetadata.previewUrl ? (
-                    <video
-                      src={videoMetadata.previewUrl}
-                      controls
-                      className="w-full max-h-[140px] object-contain bg-black"
-                    />
-                  ) : (
-                    <div className="h-[110px] flex flex-col items-center justify-center bg-[#0D1518] text-slate-300 space-y-1.5 p-3 text-center">
-                      <Film className="w-6 h-6 text-[#93B8D3] animate-pulse" />
-                      <span className="text-xs font-mono font-bold text-white">
-                        {videoMetadata.fileName}
-                      </span>
-                      <span className="text-[10px] font-mono text-slate-400">
-                        {videoMetadata.resolution} • {videoMetadata.duration} (Curated Example)
-                      </span>
-                    </div>
-                  )}
+                <div className="rounded-2xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-black relative shadow-xs h-[140px]">
+                  <CustomVideoPlayer 
+                    src={videoMetadata.previewUrl || `/videos/${videoMetadata.fileName}`} 
+                    fallbackText={`${videoMetadata.fileName} (No Preview Available)`}
+                  />
                 </div>
 
                 {/* Metadata Pills */}
@@ -651,8 +640,8 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
           viewport={{ once: true, margin: '-50px' }}
           className={`${
             isMaximized
-              ? 'fixed inset-0 z-[9999] w-screen h-screen bg-slate-950 flex flex-col m-0 rounded-none border-0 shadow-none'
-              : 'lg:col-span-7 rounded-[32px] bg-slate-950 border border-slate-300/80 dark:border-slate-700/80 shadow-aerial-lg dark:shadow-aerial-dark overflow-hidden flex flex-col justify-between relative h-full min-h-[360px]'
+              ? 'fixed inset-0 z-[9999] w-screen h-screen bg-sf-canvas-light dark:bg-slate-950 flex flex-col m-0 rounded-none border-0 shadow-none'
+              : 'lg:col-span-7 rounded-[32px] bg-slate-100 dark:bg-slate-950 border border-slate-300/80 dark:border-slate-700/80 shadow-aerial-lg dark:shadow-aerial-dark overflow-hidden flex flex-col justify-between relative h-full min-h-[360px]'
           }`}
         >
           {/* Viewer Window Header */}
@@ -686,6 +675,17 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                 {reducedMotion ? 'MOTION: PAUSED' : 'MOTION: AUTO'}
               </button>
 
+              {/* Reset Home View Button */}
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('reset-camera'))}
+                className="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold border border-slate-700 bg-slate-800 text-slate-300 hover:text-[#93B8D3] hover:border-[#659AC1] transition-all flex items-center gap-1 cursor-pointer"
+                title="Reset View"
+                aria-label="Reset View"
+              >
+                <Home className="w-3 h-3" />
+                <span className="hidden sm:inline">RESET</span>
+              </button>
+
               {/* Maximize / Minimize Button */}
               <button
                 onClick={() => setIsMaximized(!isMaximized)}
@@ -709,9 +709,10 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
           </div>
 
           {/* Interactive 3D Canvas Viewport */}
-          <div className="relative flex-1 w-full min-h-[260px] bg-slate-950">
+          <div className="relative flex-1 w-full min-h-[260px] bg-transparent">
             <SceneCanvas cameraPosition={[6, 5, 8]} fov={48} className="w-full h-full min-h-[260px]">
               <Hero3DScene
+                plyModelUrl={selectedExample?.plyModelUrl}
                 reducedMotion={reducedMotion}
                 showTerrain={showTerrain}
                 showPointCloud={true}
@@ -719,12 +720,14 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
                 showFlightPath={showFlightPath}
                 showDrone={showDrone}
                 pointCount={2000}
+                modelRotation={selectedExample?.modelRotation}
+                modelScale={selectedExample?.modelScale}
               />
             </SceneCanvas>
 
             {/* OVERLAY 1: Empty Standby State */}
             {reconstructionState === 'empty' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none bg-slate-950/40">
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-6 text-center pointer-events-none bg-slate-100/40 dark:bg-slate-950/40">
                 <div className="p-5 rounded-3xl bg-slate-950/85 border border-white/10 max-w-xs space-y-2 shadow-2xl backdrop-blur-md">
                   <div className="w-9 h-9 rounded-full bg-[#659AC1]/15 border border-[#659AC1]/30 mx-auto flex items-center justify-center text-[#93B8D3]">
                     <Camera className="w-4 h-4" />
@@ -748,12 +751,12 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
             {/* OVERLAY 2: Uploaded State Banner */}
             {reconstructionState === 'uploaded' && (
-              <div className="absolute top-3.5 left-3.5 p-3 rounded-2xl bg-slate-950/85 border border-white/10 text-xs font-mono text-slate-300 pointer-events-none space-y-0.5 shadow-md">
+              <div className="absolute top-3.5 left-3.5 p-3 rounded-2xl bg-white/85 dark:bg-slate-950/85 border border-slate-300 dark:border-white/10 text-xs font-mono text-slate-700 dark:text-slate-300 pointer-events-none space-y-0.5 shadow-md">
                 <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#659AC1] animate-pulse" />
-                  <span className="font-bold text-white text-[11px]">FLIGHT DATA LOADED</span>
+                  <span className="font-bold text-slate-900 dark:text-white text-[11px]">FLIGHT DATA LOADED</span>
                 </div>
-                <div className="text-[10px] text-slate-400">
+                <div className="text-[10px] text-slate-500 dark:text-slate-400">
                   Click &apos;Reconstruct&apos; to run single-pass geometry preview.
                 </div>
               </div>
@@ -761,12 +764,12 @@ export const ReconstructionWorkspace: React.FC<ReconstructionWorkspaceProps> = (
 
             {/* OVERLAY 3: Staged Processing Demo Overlay */}
             {reconstructionState === 'processing' && (
-              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 pointer-events-none bg-slate-950/80 backdrop-blur-xs">
-                <div className="p-5 rounded-3xl bg-slate-950/95 border border-[#659AC1]/40 shadow-2xl max-w-sm w-full space-y-3">
+              <div className="absolute inset-0 flex flex-col items-center justify-center p-4 pointer-events-none bg-slate-100/80 dark:bg-slate-950/80 backdrop-blur-xs">
+                <div className="p-5 rounded-3xl bg-white/95 dark:bg-slate-950/95 border border-[#659AC1]/40 shadow-2xl max-w-sm w-full space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-2.5 h-2.5 rounded-full bg-[#659AC1] animate-ping" />
-                      <span className="font-display font-bold text-xs text-white">
+                      <span className="font-display font-bold text-xs text-slate-900 dark:text-white">
                         Reconstructing 3D Scene...
                       </span>
                     </div>

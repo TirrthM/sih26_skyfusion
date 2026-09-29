@@ -54,9 +54,7 @@ export const AppSidebar: React.FC<AppSidebarProps> = ({
       <div>
         <div className="flex items-center justify-between p-4 border-b-2 border-slate-950 dark:border-sf-border-dark">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sf-cyan text-slate-950 border-2 border-slate-950 flex items-center justify-center font-display font-black text-lg shadow-tactile-sm-light shrink-0">
-              SF
-            </div>
+            <img src="/logo.png" alt="SkyFusion Logo" className="w-10 h-10 object-contain shrink-0" />
             {!collapsed && (
               <div className="flex flex-col">
                 <span className="font-display font-bold text-base text-slate-900 dark:text-white leading-tight">

@@ -8,9 +8,7 @@ export const LandingFooter: React.FC = () => {
       <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 items-center gap-3 sm:gap-4">
         {/* Left: Brand */}
         <div className="flex items-center gap-2.5 justify-center sm:justify-start">
-          <div className="w-6 h-6 rounded-full bg-[#0B100D] dark:bg-[#F1F8F9] text-[#F1F8F9] dark:text-[#0B100D] flex items-center justify-center font-display font-black text-[11px]">
-            SF
-          </div>
+          <img src="/logo.png" alt="SkyFusion Logo" className="w-6 h-6 object-contain" />
           <span className="font-display font-bold text-sm tracking-tight text-slate-950 dark:text-white">
             Sky<span className="text-[#37699F] dark:text-[#93B8D3]">Fusion</span>
           </span>

@@ -98,9 +98,7 @@ export const LandingNav: React.FC = () => {
             onClick={(e) => scrollToSection(e, 'reconstruction')}
             className="flex items-center gap-2.5 group cursor-pointer outline-none focus:outline-none"
           >
-            <div className="w-8 h-8 rounded-full bg-[#0B100D] dark:bg-[#F1F8F9] text-[#F1F8F9] dark:text-[#0B100D] flex items-center justify-center font-display font-black text-xs tracking-tight shadow-xs group-hover:scale-105 transition-transform duration-200">
-              SF
-            </div>
+            <img src="/logo.png" alt="SkyFusion Logo" className="w-8 h-8 object-contain shadow-xs group-hover:scale-105 transition-transform duration-200" />
             <div className="flex items-center">
               <span className="font-display font-bold text-base sm:text-lg tracking-tight text-slate-950 dark:text-white">
                 Sky<span className="text-[#37699F] dark:text-[#93B8D3]">Fusion</span>
