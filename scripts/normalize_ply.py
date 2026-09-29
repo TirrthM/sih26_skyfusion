@@ -19,10 +19,9 @@ def normalize_ply(input_path, output_path, downsample_ratio=1.0):
     num_points = len(pcd.points)
     
     # Downsample if requested
-    if downsample_ratio < 1.0:
-        print(f"Downsampling to {downsample_ratio*100}% of original points...")
-        # random_down_sample requires open3d >= 0.12
-        pcd = pcd.random_down_sample(downsample_ratio)
+    if downsample_ratio > 0.0:
+        print(f"Voxel downsampling with voxel size {downsample_ratio}...")
+        pcd = pcd.voxel_down_sample(downsample_ratio)
         new_num_points = len(pcd.points)
         print(f"Reduced points from {num_points} to {new_num_points}")
         num_points = new_num_points
@@ -68,7 +67,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Normalize and optionally downsample a PLY point cloud.")
     parser.add_argument("input", help="Input PLY file path")
     parser.add_argument("output", help="Output PLY file path")
-    parser.add_argument("--downsample", type=float, default=1.0, help="Fraction of points to keep (e.g. 0.15 for 15%)")
+    parser.add_argument("--downsample", type=float, default=0.0, help="Voxel size for downsampling (e.g. 0.05). 0.0 means no downsampling.")
     args = parser.parse_args()
 
     normalize_ply(args.input, args.output, args.downsample)
